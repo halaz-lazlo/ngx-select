@@ -1,1 +1,53 @@
-ngx-select works
+<div class="ngx-select" [ngClass]="{'ngx-select--multiple': isMultiple, 'ngx-select--open': isOpen, 'ngx-select--loading': isLoading}">
+  <div #controlDOM class="ngx-select__control" (click)="focus()">
+    <div *ngIf="isMultiple" class="ngx-select__tags">
+      <span *ngFor="let item of selectedOptions; let i = index" class="ngx-select__tag">
+        <span class="ngx-select__tag-remove" (click)="removeOption(i)"></span>
+        {{item[labelField]}}
+      </span>
+    </div>
+
+    <div *ngIf="!isMultiple && selectedOption" class="ngx-select__value">
+      {{selectedOption[labelField]}}
+    </div>
+
+    <input
+      #inputDOM
+      class="ngx-select__input"
+      type="text"
+      (click)="open()"
+      (focus)="focus()"
+      (keydown.tab)="close()"
+      (keydown.arrowup)="highlightPrevOption()"
+      (keydown.arrowdown)="highlightNextOption()"
+      (keydown.enter)="onEnter()"
+      (keydown.backspace)="onBackspace()"
+      (keydown.escape)="close()"
+      [(ngModel)]="inputValue"
+      (ngModelChange)="onInputKeyup($event)"
+      [style.width.px]="inputWidth">
+
+      <div class="ngx-select__loader"></div>
+  </div>
+
+  <div class="ngx-select__dropdown">
+    <div
+      *ngFor="let option of filteredOptions; let i = index"
+      class="ngx-select__option"
+      [ngClass]="{'ngx-select__option--selected': model === option[valueField] || (model && model[labelField] === option[labelField]), 'ngx-select__option--highlighted': highlightedOptionIndex === i}"
+      (click)="selectOption(option)"
+      (mouseenter)="highlightOption(i)">
+      {{option[labelField]}}
+    </div>
+
+    <div *ngIf="!filteredOptions || filteredOptions.length === 0" class="ngx-select__option ngx-select__option--empty">
+      <div *ngIf="!allowAdd" class="ngx-select__option-msg">
+        Not a single result found
+      </div>
+
+      <div *ngIf="allowAdd && inputValue" class="ngx-select__option-btn" (click)="createOption()">
+        Add {{inputValue}}...
+      </div>
+    </div>
+  </div>
+</div>

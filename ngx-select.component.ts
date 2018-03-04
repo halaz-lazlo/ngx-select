@@ -2,8 +2,8 @@ import { Component, OnInit, Input, EventEmitter, Output, ViewEncapsulation, View
 
 @Component({
   selector: 'ngx-select',
-  templateUrl: './select.component.html',
-  styleUrls: ['./select.component.scss'],
+  templateUrl: './ngx-select.component.html',
+  styleUrls: ['./ngx-select.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class NxgSelectComponent implements OnInit {
@@ -12,16 +12,13 @@ export class NxgSelectComponent implements OnInit {
   set options(options: object[]) {
     this._options = options;
 
-    this.filter();
+    if (!this.isFirstInit) {
+        this.filter();
+    }
   };
   get options(): object[] {
     return this._options;
   };
-
-  @Input() label?: string;
-  @Input() errors?: FormError[];
-
-  @Input() isRequired?: boolean;
 
   // select input related
   @Input() labelField?: string = 'label';
@@ -41,12 +38,14 @@ export class NxgSelectComponent implements OnInit {
   @ViewChild('controlDOM') controlDOM: ElementRef;
 
   public isOpen: boolean;
-  public inputWidth: any = 100;
   public highlightedOptionIndex = -1;
   public inputValue: string;
 
-  public filteredOptions: any;
+  public filteredOptions: object[];
   public selectedOption: any;
+  public selectedOptions: object[] = [];
+
+  private isFirstInit = true;
 
   ngOnInit() {
     this.filter();
@@ -56,6 +55,8 @@ export class NxgSelectComponent implements OnInit {
         this.close();
       }
     });
+
+    this.isFirstInit = false;
   }
 
   focus() {
@@ -64,7 +65,7 @@ export class NxgSelectComponent implements OnInit {
   }
 
   open() {
-    if (this.filteredOptions.length || this.inputValue) {
+    if (this.filteredOptions && (this.filteredOptions.length || this.inputValue)) {
       this.isOpen = true;
     }
   }
@@ -77,7 +78,7 @@ export class NxgSelectComponent implements OnInit {
     this.open();
     this.filter();
 
-    this.inputChange.emit('asdasd');
+    this.inputChange.emit(this.inputValue);
   }
 
   highlightPrevOption() {
@@ -129,21 +130,18 @@ export class NxgSelectComponent implements OnInit {
   }
 
   createOption() {
-    if (this.isObjectValue) {
-      const newOption = {};
-      newOption[this.valueField] = null;
-      newOption[this.labelField] = this.inputValue;
+    const newOption = {};
+    newOption[this.valueField] = null;
+    newOption[this.labelField] = this.inputValue;
 
-      if (!this.isOptionInModel(newOption)) {
-        this.selectOption(newOption);
-      }
-    } else {
-      this.selectOption(this.inputValue);
+    if (!this.isOptionInModel(newOption)) {
+      this.selectOption(newOption);
     }
   }
 
   removeOption(i) {
     this.model.splice(i, 1);
+    this.selectedOptions.splice(i, 1);
 
     this.filter();
     this.modelChange.emit(this.model);
@@ -185,17 +183,26 @@ export class NxgSelectComponent implements OnInit {
   }
 
   selectOption(option) {
-    if (this.isObjectValue) {
-      if (this.isMultiple) {
+    if (this.isMultiple) {
         if (!this.model) {
-          this.model = [];
+            this.model = [];
         }
 
-        this.model.push(option);
-      }
+        if (this.isObjectValue) {
+            this.model.push(option);
+        } else {
+            this.model.push(option[this.valueField]);
+        }
+
+        this.selectedOptions.push(option);
     } else {
-      this.selectedOption = option;
-      this.model = option[this.valueField];
+        if (this.isObjectValue) {
+            this.model = option;
+        } else {
+            this.model = option[this.valueField];
+        }
+
+        this.selectedOption = option;
     }
 
     this.highlightedOptionIndex = -1;
@@ -205,11 +212,15 @@ export class NxgSelectComponent implements OnInit {
     this.modelChange.emit(this.model);
   }
 
-  isOptionInModel(option): boolean {
+  private isOptionInModel(option): boolean {
     let isOptionInModel = false;
     if (this.model) {
       const items = this.model.filter(modelItem => {
-        return modelItem[this.labelField] === option[this.labelField];
+            if (this.isObjectValue) {
+                return modelItem[this.labelField] === option[this.labelField];
+            } else {
+                return modelItem === option[this.labelField];
+            }
       });
 
       isOptionInModel = items.length > 0;
