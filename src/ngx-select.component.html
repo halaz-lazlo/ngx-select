@@ -27,6 +27,8 @@
       (ngModelChange)="onInputKeyup($event)"
       [style.width.px]="inputWidth">
 
+      <div class="ngx-select__input-fake" #inputFakeDOM>{{inputValue}}</div>
+
       <div class="ngx-select__loader"></div>
   </div>
 

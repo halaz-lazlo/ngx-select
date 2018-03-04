@@ -32,14 +32,16 @@ export class NxgSelectComponent implements OnInit {
   @Input() model: any;
   @Output() modelChange: EventEmitter<any> = new EventEmitter();
 
+  public inputValue: string;
+  public inputWidth: number = 0;
   @Output() inputChange: EventEmitter<string> = new EventEmitter();
-
   @ViewChild('inputDOM') inputDOM: ElementRef;
+  @ViewChild('inputFakeDOM') inputFakeDOM: ElementRef;
+
   @ViewChild('controlDOM') controlDOM: ElementRef;
 
   public isOpen: boolean;
   public highlightedOptionIndex = -1;
-  public inputValue: string;
 
   public filteredOptions: object[];
   public selectedOption: any;
@@ -55,6 +57,18 @@ export class NxgSelectComponent implements OnInit {
         this.close();
       }
     });
+
+    // copy styles
+    const styles = [];
+    const cssProps = window.getComputedStyle(this.inputDOM.nativeElement);
+    const cssPropsToCopy = ['border', 'line-height', 'letter-spacing', 'font-size', 'font-weight', 'font-family'];
+    const newProps = [];
+    cssPropsToCopy.forEach(prop => {
+      const val = cssProps.getPropertyValue(prop);
+      newProps.push(`${prop}: ${val}`);
+    });
+
+    this.inputFakeDOM.nativeElement.setAttribute('style', newProps.join(';'));
 
     this.isFirstInit = false;
   }
@@ -75,6 +89,17 @@ export class NxgSelectComponent implements OnInit {
   }
 
   onInputKeyup() {
+    setTimeout(() => {
+      let inputWidth = 0;
+      inputWidth = this.inputFakeDOM.nativeElement.clientWidth + 15;
+
+      if (inputWidth === 0) {
+        inputWidth = 5;
+      }
+
+      this.inputWidth = inputWidth;
+    }, 10);
+
     this.open();
     this.filter();
 
