@@ -1,0 +1,25 @@
+{
+  "name": "@halaz.lazlo/ngx-select",
+  "version": "1.0.0",
+  "description": "Angular select component",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/halaz-lazlo/ngx-select.git"
+  },
+  "keywords": [
+    "angular",
+    "select",
+    "multiple",
+    "async"
+  ],
+  "author": "halaz.lazlo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/halaz-lazlo/ngx-select/issues"
+  },
+  "homepage": "https://github.com/halaz-lazlo/ngx-select#readme"
+}
