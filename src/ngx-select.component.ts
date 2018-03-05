@@ -90,10 +90,10 @@ export class NxgSelectComponent implements OnInit {
   }
 
   initSelectedOption() {
-    if (typeof this._model !== 'undefined') {
+    if (typeof this._model !== 'undefined' && this._model !== null) {
       if (!this.isMultiple) {
         if (this.isObjectValue) {
-          this.selectedOption = this._model;
+          this.selectedOption = { ...this._model };
         } else {
           this.selectedOption = this.getOptionByValue(this._model);
         }
@@ -199,6 +199,8 @@ export class NxgSelectComponent implements OnInit {
         this.clearAll();
       }
     }
+
+    console.log(this.selectedOption, this.selectedOptions);
   }
 
   createOption() {
@@ -230,8 +232,9 @@ export class NxgSelectComponent implements OnInit {
   }
 
   clearAll() {
-    this.selectedOption = null;
     this._model = null;
+    this.selectedOption = null;
+    this.selectedOptions = null;
     this.filter();
 
     this.modelChange.emit(this._model);
