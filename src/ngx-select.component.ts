@@ -71,7 +71,35 @@ export class NxgSelectComponent implements OnInit {
 
     this.inputFakeDOM.nativeElement.setAttribute('style', newProps.join(';'));
 
+    // set selected
+    this.initSelectedOption();
+
     this.isFirstInit = false;
+  }
+
+  initSelectedOption() {
+    if (typeof this.model !== 'undefined') {
+      if (!this.isMultiple) {
+        if (this.isObjectValue) {
+          this.selectedOption = this.model;
+        } else {
+          this.selectedOption = this.getOptionByValue(this.model);
+        }
+      } else {
+        if (this.isObjectValue) {
+          this.selectedOptions = this.model;
+        } else {
+          const selectedOptions = [];
+          this.model.forEach(modelValue => {
+            selectedOptions.push(this.getOptionByValue(modelValue));
+          });
+
+          console.log('selected', selectedOptions);
+
+          this.selectedOptions = selectedOptions;
+        }
+      }
+    }
   }
 
   focus() {
@@ -236,9 +264,9 @@ export class NxgSelectComponent implements OnInit {
       this.selectedOptions.push(option);
     } else {
       if (this.isObjectValue) {
-          this.model = option;
+        this.model = option;
       } else {
-          this.model = option[this.valueField];
+        this.model = option[this.valueField];
       }
 
       this.selectedOption = option;
@@ -248,7 +276,7 @@ export class NxgSelectComponent implements OnInit {
     this.close();
     this.filter();
 
-    console.log('modelChange', this.model);
+    console.log('ngx-select', this.model);
     this.modelChange.emit(this.model);
   }
 
@@ -267,5 +295,25 @@ export class NxgSelectComponent implements OnInit {
     }
 
     return isOptionInModel;
+  }
+
+  private getOptionByValue(value) {
+    let ind = null;
+
+    this._options.forEach((option, i) => {
+      if (option[this.valueField] === value) {
+        ind = i;
+      }
+    });
+
+    if (ind && ind >= 0) {
+      return this._options[ind];
+    } else {
+      const selectedOption = {};
+      selectedOption[this.valueField] = value;
+      selectedOption[this.labelField] = value;
+
+      return selectedOption;
+    }
   }
 }
