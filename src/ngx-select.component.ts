@@ -23,6 +23,7 @@ export class NxgSelectComponent implements OnInit {
   // select input related
   @Input() labelField?: string = 'label';
   @Input() valueField?: string = 'value';
+  @Input() placeholder?: string;
   @Input() allowAdd?: boolean;
   @Input() isMultiple?: boolean;
   @Input() isObjectValue?: boolean;
@@ -209,25 +210,25 @@ export class NxgSelectComponent implements OnInit {
 
   selectOption(option) {
     if (this.isMultiple) {
-        if (!this.model) {
-            this.model = [];
-        }
+      if (!this.model) {
+          this.model = [];
+      }
 
-        if (this.isObjectValue) {
-            this.model.push(option);
-        } else {
-            this.model.push(option[this.valueField]);
-        }
+      if (this.isObjectValue) {
+          this.model.push(option);
+      } else {
+          this.model.push(option[this.valueField]);
+      }
 
-        this.selectedOptions.push(option);
+      this.selectedOptions.push(option);
     } else {
-        if (this.isObjectValue) {
-            this.model = option;
-        } else {
-            this.model = option[this.valueField];
-        }
+      if (this.isObjectValue) {
+          this.model = option;
+      } else {
+          this.model = option[this.valueField];
+      }
 
-        this.selectedOption = option;
+      this.selectedOption = option;
     }
 
     this.highlightedOptionIndex = -1;
@@ -241,11 +242,11 @@ export class NxgSelectComponent implements OnInit {
     let isOptionInModel = false;
     if (this.model) {
       const items = this.model.filter(modelItem => {
-            if (this.isObjectValue) {
-                return modelItem[this.labelField] === option[this.labelField];
-            } else {
-                return modelItem === option[this.labelField];
-            }
+        if (this.isObjectValue) {
+          return modelItem[this.labelField] === option[this.labelField];
+        } else {
+          return modelItem === option[this.valueField];
+        }
       });
 
       isOptionInModel = items.length > 0;

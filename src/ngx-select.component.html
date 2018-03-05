@@ -1,6 +1,6 @@
 <div class="ngx-select" [ngClass]="{'ngx-select--multiple': isMultiple, 'ngx-select--open': isOpen, 'ngx-select--loading': isLoading}">
   <div #controlDOM class="ngx-select__control" (click)="focus()">
-    <div *ngIf="isMultiple" class="ngx-select__tags">
+    <div *ngIf="isMultiple && selectedOptions.length" class="ngx-select__tags">
       <span *ngFor="let item of selectedOptions; let i = index" class="ngx-select__tag">
         <span class="ngx-select__tag-remove" (click)="removeOption(i)"></span>
         {{item[labelField]}}
@@ -9,6 +9,10 @@
 
     <div *ngIf="!isMultiple && selectedOption" class="ngx-select__value">
       {{selectedOption[labelField]}}
+    </div>
+
+    <div *ngIf="!inputValue && !selectedOption && (!selectedOptions || !selectedOptions.length)" class="ngx-select__placeholder">
+      {{placeholder}}
     </div>
 
     <input

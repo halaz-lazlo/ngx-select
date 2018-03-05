@@ -26,6 +26,7 @@ imports: [..., NgxSelectModule, ...]
 [options]|object[]|undefined|The options shown in dropdown
 [valueField]|string|value|The value field of option
 [labelField]|string|label|The label field of option
+[placeholder]|string|undefined|The placeholder
 [isMultiple]|boolean|false|can add multiple option from options to model array
 [isObjectValue]|boolean|false|sets the model the whole option object
 [isLoading]|boolean|false|is waiting for async call
