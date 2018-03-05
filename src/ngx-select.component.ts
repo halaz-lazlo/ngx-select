@@ -136,7 +136,7 @@ export class NxgSelectComponent implements OnInit {
 
   onEnter() {
     if (this.allowAdd) {
-      if (this.filteredOptions.length > 0) {
+      if (this.filteredOptions && this.filteredOptions.length > 0) {
         this.selectOption(this.filteredOptions[this.highlightedOptionIndex]);
       } else {
         this.createOption();
@@ -163,7 +163,11 @@ export class NxgSelectComponent implements OnInit {
     newOption[this.valueField] = null;
     newOption[this.labelField] = this.inputValue;
 
-    if (!this.isOptionInModel(newOption)) {
+    if (this.isMultiple) {
+      if (!this.isOptionInModel(newOption)) {
+        this.selectOption(newOption);
+      }
+    } else {
       this.selectOption(newOption);
     }
   }
