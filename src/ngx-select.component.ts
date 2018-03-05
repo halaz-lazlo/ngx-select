@@ -31,7 +31,18 @@ export class NxgSelectComponent implements OnInit {
 
   @Input() isLoading?: boolean;
 
-  @Input() model: any;
+  private _model: any;
+  @Input()
+  set model(model: any) {
+    this._model = model;
+
+    if (!this.isFirstInit) {
+      this.initSelectedOption();
+    }
+  }
+  get model() {
+    return this._model;
+  }
   @Output() modelChange: EventEmitter<any> = new EventEmitter();
 
   public inputValue: string;
@@ -79,19 +90,19 @@ export class NxgSelectComponent implements OnInit {
   }
 
   initSelectedOption() {
-    if (typeof this.model !== 'undefined') {
+    if (typeof this._model !== 'undefined') {
       if (!this.isMultiple) {
         if (this.isObjectValue) {
-          this.selectedOption = this.model;
+          this.selectedOption = this._model;
         } else {
-          this.selectedOption = this.getOptionByValue(this.model);
+          this.selectedOption = this.getOptionByValue(this._model);
         }
       } else {
         if (this.isObjectValue) {
-          this.selectedOptions = this.model;
+          this.selectedOptions = this._model;
         } else {
           const selectedOptions = [];
-          this.model.forEach(modelValue => {
+          this._model.forEach(modelValue => {
             selectedOptions.push(this.getOptionByValue(modelValue));
           });
 
@@ -200,25 +211,25 @@ export class NxgSelectComponent implements OnInit {
   }
 
   removeOption(i) {
-    this.model.splice(i, 1);
+    this._model.splice(i, 1);
     this.selectedOptions.splice(i, 1);
 
     this.filter();
-    this.modelChange.emit(this.model);
+    this.modelChange.emit(this._model);
   }
 
   removeLastOption() {
-    if (this.model && this.model.length > 0) {
-      this.removeOption(this.model.length - 1);
+    if (this._model && this._model.length > 0) {
+      this.removeOption(this._model.length - 1);
     }
   }
 
   clearAll() {
     this.selectedOption = null;
-    this.model = null;
+    this._model = null;
     this.filter();
 
-    this.modelChange.emit(this.model);
+    this.modelChange.emit(this._model);
   }
 
   filter() {
@@ -228,7 +239,7 @@ export class NxgSelectComponent implements OnInit {
           let isFiltered = !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue) >= 0;
 
           // is already selected
-          if (this.model && this.isMultiple) {
+          if (this._model && this.isMultiple) {
             if (this.isOptionInModel(option)) {
               isFiltered = false;
             }
@@ -245,27 +256,27 @@ export class NxgSelectComponent implements OnInit {
   }
 
   onModelChange(value) {
-    this.modelChange.emit(this.model);
+    this.modelChange.emit(this._model);
   }
 
   selectOption(option) {
     if (this.isMultiple) {
-      if (!this.model) {
-          this.model = [];
+      if (!this._model) {
+          this._model = [];
       }
 
       if (this.isObjectValue) {
-          this.model.push(option);
+          this._model.push(option);
       } else {
-          this.model.push(option[this.valueField]);
+          this._model.push(option[this.valueField]);
       }
 
       this.selectedOptions.push(option);
     } else {
       if (this.isObjectValue) {
-        this.model = option;
+        this._model = option;
       } else {
-        this.model = option[this.valueField];
+        this._model = option[this.valueField];
       }
 
       this.selectedOption = option;
@@ -275,13 +286,13 @@ export class NxgSelectComponent implements OnInit {
     this.close();
     this.filter();
 
-    this.modelChange.emit(this.model);
+    this.modelChange.emit(this._model);
   }
 
   private isOptionInModel(option): boolean {
     let isOptionInModel = false;
-    if (this.model) {
-      const items = this.model.filter(modelItem => {
+    if (this._model) {
+      const items = this._model.filter(modelItem => {
         if (this.isObjectValue) {
           return modelItem[this.labelField] === option[this.labelField];
         } else {
