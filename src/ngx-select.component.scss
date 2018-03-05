@@ -104,11 +104,13 @@
 
     &__dropdown {
         position: absolute;
+        top: calc(100% + 2px);
         right: 0;
         left: 0;
         z-index: 1;
         display: none;
-        border: #ccc solid 1px;
+        border: #aaa solid 1px;
+        border-radius: 3px;
         background: #fff;
     }
 
@@ -165,8 +167,14 @@
     }
 
     &--open {
-        .ngx-select__dropdown {
-            display: block;
+        .ngx-select {
+            &__control {
+                border-color: #000;
+            }
+
+            &__dropdown {
+                display: block;
+            }
         }
     }
 }

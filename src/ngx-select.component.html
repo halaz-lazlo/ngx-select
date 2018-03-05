@@ -11,7 +11,7 @@
       {{selectedOption[labelField]}}
     </div>
 
-    <div *ngIf="!inputValue && !selectedOption && (!selectedOptions || !selectedOptions.length)" class="ngx-select__placeholder">
+    <div *ngIf="placeholder && !inputValue && !selectedOption && (!selectedOptions || !selectedOptions.length)" class="ngx-select__placeholder">
       {{placeholder}}
     </div>
 
