@@ -99,7 +99,12 @@ export class NxgSelectComponent implements OnInit {
         }
       } else {
         if (this.isObjectValue) {
-          this.selectedOptions = this._model;
+          const selectedOptions = [];
+          this._model.forEach(modelItem => {
+            selectedOptions.push(modelItem);
+          });
+
+          this.selectedOptions = selectedOptions;
         } else {
           const selectedOptions = [];
           this._model.forEach(modelValue => {
@@ -255,20 +260,16 @@ export class NxgSelectComponent implements OnInit {
     }
   }
 
-  onModelChange(value) {
-    this.modelChange.emit(this._model);
-  }
-
   selectOption(option) {
     if (this.isMultiple) {
       if (!this._model) {
-          this._model = [];
+        this._model = [];
       }
 
       if (this.isObjectValue) {
-          this._model.push(option);
+        this._model.push(option);
       } else {
-          this._model.push(option[this.valueField]);
+        this._model.push(option[this.valueField]);
       }
 
       this.selectedOptions.push(option);
