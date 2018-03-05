@@ -94,8 +94,6 @@ export class NxgSelectComponent implements OnInit {
             selectedOptions.push(this.getOptionByValue(modelValue));
           });
 
-          console.log('selected', selectedOptions);
-
           this.selectedOptions = selectedOptions;
         }
       }
@@ -276,7 +274,6 @@ export class NxgSelectComponent implements OnInit {
     this.close();
     this.filter();
 
-    console.log('ngx-select', this.model);
     this.modelChange.emit(this.model);
   }
 
