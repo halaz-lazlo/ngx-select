@@ -80,7 +80,10 @@ export class NxgSelectComponent implements OnInit {
   }
 
   open() {
-    if (this.filteredOptions && (this.filteredOptions.length || this.inputValue)) {
+    if (
+      (this.allowAdd && this.inputValue) ||
+      ((this.filteredOptions && this.filteredOptions.length) || this.inputValue)
+    ) {
       this.isOpen = true;
     }
   }
@@ -240,6 +243,8 @@ export class NxgSelectComponent implements OnInit {
     this.inputValue = '';
     this.close();
     this.filter();
+
+    console.log('modelChange', this.model);
     this.modelChange.emit(this.model);
   }
 
