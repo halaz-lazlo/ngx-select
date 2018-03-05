@@ -190,16 +190,22 @@ export class NxgSelectComponent implements OnInit {
   filter() {
     if (this._options) {
       this.filteredOptions = this._options.filter(option => {
-        let isFiltered = !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue) >= 0;
+        if (option[this.labelField]) {
+          let isFiltered = !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue) >= 0;
 
-        // is already selected
-        if (this.model && this.isMultiple) {
-          if (this.isOptionInModel(option)) {
-            isFiltered = false;
+          // is already selected
+          if (this.model && this.isMultiple) {
+            if (this.isOptionInModel(option)) {
+              isFiltered = false;
+            }
           }
-        }
 
-        return isFiltered;
+          return isFiltered;
+        } else {
+          console.error('you sure the labelField is correct?');
+
+          return false;
+        }
       });
     }
   }
