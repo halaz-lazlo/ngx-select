@@ -184,7 +184,7 @@ export class NxgSelectComponent implements OnInit {
       } else {
         this.createOption();
       }
-    } else {
+    } else if (this.highlightedOptionIndex >= 0) {
       this.selectOption(this.filteredOptions[this.highlightedOptionIndex]);
     }
   }
