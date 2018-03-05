@@ -22,6 +22,7 @@
       (click)="open()"
       (focus)="focus()"
       (keydown.tab)="close()"
+      (keydown.shift.tab)="close()"
       (keydown.arrowup)="highlightPrevOption()"
       (keydown.arrowdown)="highlightNextOption()"
       (keydown.enter)="onEnter()"
@@ -46,14 +47,17 @@
       {{option[labelField]}}
     </div>
 
-    <div *ngIf="!filteredOptions || filteredOptions.length === 0" class="ngx-select__option ngx-select__option--empty">
-      <div *ngIf="!allowAdd" class="ngx-select__option-msg">
-        Not a single result found
-      </div>
+    <div
+      *ngIf="!allowAdd && (!filteredOptions || filteredOptions.length === 0)"
+      class="ngx-select__option ngx-select__option--no-result">
+      Not a single result found
+    </div>
 
-      <div *ngIf="allowAdd && inputValue" class="ngx-select__option-btn" (click)="createOption()">
-        Add {{inputValue}}...
-      </div>
+    <div
+      *ngIf="allowAdd && inputValue && (!filteredOptions || filteredOptions.length === 0)"
+      class="ngx-select__option ngx-select__option--add-new"
+      (click)="createOption()">
+      Add {{inputValue}}...
     </div>
   </div>
 </div>

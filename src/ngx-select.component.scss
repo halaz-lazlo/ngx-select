@@ -117,18 +117,22 @@
 
         &--selected,
         &--highlighted,
-        &--empty {
+        &--add-new {
             display: block;
-            background: #eee;
             cursor: pointer;
         }
 
-        &-msg {
+        &--selected {
+            background: #efefef;
+        }
+
+        &--highlighted,
+        &--add-new {
+            background: #ddd;
+        }
+
+        &--no-result {
             font-size: 14px;
-        }
-
-        &-btn {
-            cursor: pointer;
         }
     }
 

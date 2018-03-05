@@ -231,7 +231,6 @@ export class NxgSelectComponent implements OnInit {
       this.selectedOption = option;
     }
 
-    this.highlightedOptionIndex = -1;
     this.inputValue = '';
     this.close();
     this.filter();
