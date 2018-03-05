@@ -27,6 +27,7 @@ export class NxgSelectComponent implements OnInit {
   @Input() allowAdd?: boolean;
   @Input() isMultiple?: boolean;
   @Input() isObjectValue?: boolean;
+  @Input() dropdownDirection?: string = 'down';
 
   @Input() isLoading?: boolean;
 

@@ -1,4 +1,4 @@
-<div class="ngx-select" [ngClass]="{'ngx-select--multiple': isMultiple, 'ngx-select--open': isOpen, 'ngx-select--loading': isLoading}">
+<div class="ngx-select" [ngClass]="{'ngx-select--multiple': isMultiple, 'ngx-select--open': isOpen, 'ngx-select--loading': isLoading, 'ngx-select--dropdown-up': dropdownDirection === 'up'}">
   <div #controlDOM class="ngx-select__control" (click)="focus()">
     <div *ngIf="isMultiple && selectedOptions.length" class="ngx-select__tags">
       <span *ngFor="let item of selectedOptions; let i = index" class="ngx-select__tag">

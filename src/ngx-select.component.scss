@@ -112,6 +112,11 @@
         border: #aaa solid 1px;
         border-radius: 3px;
         background: #fff;
+
+        .ngx-select--dropdown-up & {
+            top: auto;
+            bottom: calc(100% + 2px);
+        }
     }
 
     &__option {
