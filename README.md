@@ -36,7 +36,7 @@ imports: [..., NgxSelectModule, ...]
 [addOptionMsg]|string|Add {{input}}...|The message when isMultiple === true, the {{input}} is replaced with the value in the input
 
 ## Available events
-|Event|returns|Description
+|Event|Returns|Description
 |-|-|-
 (modelChange)|object|The changed model
 (inputChange)|string|When the filter input text changes

@@ -7,6 +7,7 @@ import { Component, OnInit, Input, EventEmitter, Output, ViewEncapsulation, View
   encapsulation: ViewEncapsulation.None
 })
 export class NxgSelectComponent implements OnInit {
+  // required
   private _options: object[];
   @Input()
   set options(options: object[]) {
@@ -19,20 +20,6 @@ export class NxgSelectComponent implements OnInit {
   get options(): object[] {
     return this._options;
   };
-
-  // select input related
-  @Input() labelField?: string = 'label';
-  @Input() valueField?: string = 'value';
-  @Input() placeholder?: string;
-  @Input() allowAdd?: boolean;
-  @Input() isMultiple?: boolean;
-  @Input() isObjectValue?: boolean;
-  @Input() dropdownDirection?: string = 'down';
-  @Input() isLoading?: boolean;
-
-  @Input() noFilterResultsMsg?: string = 'No results';
-  @Input() addOptionMsg?: string = 'Add {{input}}...';
-  public addOptionMessage: string;
 
   private _model: any;
   @Input()
@@ -48,21 +35,36 @@ export class NxgSelectComponent implements OnInit {
   }
   @Output() modelChange: EventEmitter<any> = new EventEmitter();
 
+  // select input related
+  @Input() labelField?: string = 'label';
+  @Input() valueField?: string = 'value';
+  @Input() placeholder?: string;
+  @Input() isObjectValue?: boolean;
+  @Input() isMultiple?: boolean;
+  @Input() allowAdd?: boolean;
+  @Input() isLoading?: boolean;
+  @Input() dropdownDirection?: string = 'down';
+  @Input() noFilterResultsMsg?: string = 'No results';
+  @Input() addOptionMsg?: string = 'Add {{input}}...';
+  public addOptionMessage: string;
+
+  // input
   public inputValue: string;
   public inputWidth: number = 0;
   @Output() inputChange: EventEmitter<string> = new EventEmitter();
   @ViewChild('inputDOM') inputDOM: ElementRef;
-  @ViewChild('inputFakeDOM') inputFakeDOM: ElementRef;
+  @ViewChild('inputFakeDOM') inputFakeDOM: ElementRef; // just a helper for calculating the input width
 
   @ViewChild('selectDOM') selectDOM: ElementRef;
 
+  // ui helpers
   public isOpen: boolean;
   public highlightedOptionIndex = -1;
 
+  // helpers
   public filteredOptions: object[];
   public selectedOption: any;
   public selectedOptions: object[] = [];
-
   private isFirstInit = true;
 
   ngOnInit() {
