@@ -28,8 +28,11 @@ export class NxgSelectComponent implements OnInit {
   @Input() isMultiple?: boolean;
   @Input() isObjectValue?: boolean;
   @Input() dropdownDirection?: string = 'down';
-
   @Input() isLoading?: boolean;
+
+  @Input() noFilterResultsMsg?: string = 'No results';
+  @Input() addOptionMsg?: string = 'Add {{input}}...';
+  public addOptionMessage: string;
 
   private _model: any;
   @Input()
@@ -135,7 +138,7 @@ export class NxgSelectComponent implements OnInit {
     this.isOpen = false;
   }
 
-  onInputKeyup() {
+  onInputChange() {
     setTimeout(() => {
       let inputWidth = 0;
       inputWidth = this.inputFakeDOM.nativeElement.clientWidth + 15;
@@ -149,6 +152,8 @@ export class NxgSelectComponent implements OnInit {
 
     this.open();
     this.filter();
+
+    this.addOptionMessage = this.addOptionMsg.replace('{{input}}', this.inputValue);
 
     this.inputChange.emit(this.inputValue);
   }

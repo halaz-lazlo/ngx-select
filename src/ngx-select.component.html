@@ -35,7 +35,7 @@
       (keydown.backspace)="onBackspace()"
       (keydown.escape)="close()"
       [(ngModel)]="inputValue"
-      (ngModelChange)="onInputKeyup($event)"
+      (ngModelChange)="onInputChange($event)"
       [style.width.px]="inputWidth">
 
       <div class="ngx-select__input-fake" #inputFakeDOM>{{inputValue}}</div>
@@ -56,14 +56,14 @@
     <div
       *ngIf="!allowAdd && (!filteredOptions || filteredOptions.length === 0)"
       class="ngx-select__option ngx-select__option--no-result">
-      Not a single result found
+      {{noFilterResultsMsg}}
     </div>
 
     <div
       *ngIf="allowAdd && inputValue && (!filteredOptions || filteredOptions.length === 0)"
       class="ngx-select__option ngx-select__option--add-new"
       (click)="createOption()">
-      Add {{inputValue}}...
+      {{addOptionMessage}}
     </div>
   </div>
 </div>
