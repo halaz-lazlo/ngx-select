@@ -68,28 +68,20 @@ export class NxgSelectComponent implements OnInit {
   private isFirstInit = true;
 
   ngOnInit() {
+    // filter options
     this.filter();
+
+    // init fake input
+    this.initFakeInput();
+
+    // set selected
+    this.initSelectedOption();
 
     window.addEventListener('click', e => {
       if (!this.selectDOM.nativeElement.contains(e.target)) {
         this.close();
       }
     });
-
-    // copy styles
-    const styles = [];
-    const cssProps = window.getComputedStyle(this.inputDOM.nativeElement);
-    const cssPropsToCopy = ['border', 'line-height', 'letter-spacing', 'font-size', 'font-weight', 'font-family'];
-    const newProps = [];
-    cssPropsToCopy.forEach(prop => {
-      const val = cssProps.getPropertyValue(prop);
-      newProps.push(`${prop}: ${val}`);
-    });
-
-    this.inputFakeDOM.nativeElement.setAttribute('style', newProps.join(';'));
-
-    // set selected
-    this.initSelectedOption();
 
     this.isFirstInit = false;
   }
@@ -120,6 +112,19 @@ export class NxgSelectComponent implements OnInit {
         }
       }
     }
+  }
+
+  initFakeInput() {
+    const styles = [];
+    const cssProps = window.getComputedStyle(this.inputDOM.nativeElement);
+    const cssPropsToCopy = ['border', 'line-height', 'letter-spacing', 'font-size', 'font-weight', 'font-family'];
+    const newProps = [];
+    cssPropsToCopy.forEach(prop => {
+      const val = cssProps.getPropertyValue(prop);
+      newProps.push(`${prop}: ${val}`);
+    });
+
+    this.inputFakeDOM.nativeElement.setAttribute('style', newProps.join(';'));
   }
 
   focus() {
@@ -205,7 +210,7 @@ export class NxgSelectComponent implements OnInit {
       if (this.isMultiple) {
         this.removeLastOption();
       } else {
-        this.clearAll();
+        this.removeAllOption();
       }
     }
 
@@ -240,36 +245,13 @@ export class NxgSelectComponent implements OnInit {
     }
   }
 
-  clearAll() {
+  removeAllOption() {
     this._model = null;
     this.selectedOption = null;
     this.selectedOptions = null;
     this.filter();
 
     this.modelChange.emit(this._model);
-  }
-
-  filter() {
-    if (this._options) {
-      this.filteredOptions = this._options.filter(option => {
-        if (option[this.labelField]) {
-          let isFiltered = !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue) >= 0;
-
-          // is already selected
-          if (this._model && this.isMultiple) {
-            if (this.isOptionInModel(option)) {
-              isFiltered = false;
-            }
-          }
-
-          return isFiltered;
-        } else {
-          console.error('you sure the labelField is correct?');
-
-          return false;
-        }
-      });
-    }
   }
 
   selectOption(option) {
@@ -303,6 +285,29 @@ export class NxgSelectComponent implements OnInit {
     this.filter();
 
     this.modelChange.emit(this._model);
+  }
+
+  filter() {
+    if (this._options) {
+      this.filteredOptions = this._options.filter(option => {
+        if (option[this.labelField]) {
+          let isFiltered = !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue) >= 0;
+
+          // is already selected
+          if (this._model && this.isMultiple) {
+            if (this.isOptionInModel(option)) {
+              isFiltered = false;
+            }
+          }
+
+          return isFiltered;
+        } else {
+          console.error('you sure the labelField is correct?');
+
+          return false;
+        }
+      });
+    }
   }
 
   private isOptionInModel(option): boolean {
