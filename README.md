@@ -26,11 +26,12 @@ imports: [..., NgxSelectModule, ...]
 [options]|object[]|undefined|The options shown in dropdown
 [valueField]|string|value|The value field of option
 [labelField]|string|label|The label field of option
-[placeholder]|string|undefined|The placeholder
-[dropdownDirection]|['up', 'down']|down|Dropdown direction
 [isMultiple]|boolean|false|Multiselect
+[allowAdd]|boolean|false|Allows adding new option
 [isObjectValue]|boolean|false|Sets the model the whole option object
 [isLoading]|boolean|false|Is waiting for async call, a spinner is visible
+[placeholder]|string|undefined|The placeholder
+[dropdownDirection]|['up', 'down']|down|Which direction the dropdown opens
 
 ## Available events
 |Event|returns|Description
