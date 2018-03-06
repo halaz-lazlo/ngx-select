@@ -6,7 +6,8 @@
     &__control {
         position: relative;
         display: block;
-        padding: 5px 70px 5px 10px;
+        padding: 0 70px 5px 10px;
+        min-height: 40px;
         border: #aaa solid 1px;
         border-radius: 3px;
         cursor: pointer;
@@ -37,7 +38,7 @@
     &__tag {
         position: relative;
         display: inline-block;
-        margin: 2px;
+        margin: 5px 5px 0 0;
         padding: 4px 25px 4px 4px;
         padding-left: 7px;
         background: #eee;
@@ -71,18 +72,18 @@
         bottom: 0;
         left: 0;
         overflow: hidden;
-        padding-right: 10px;
-        padding-left: 10px;
-        max-width: 100%;
+        padding: 0 10px;
         color: #aaa;
         text-overflow: ellipsis;
         white-space: nowrap;
-        line-height: 34px;
+        line-height: 40px;
     }
 
     &__input {
         display: inline-block;
+        margin-top: 5px;
         min-width: 10px;
+        min-height: 26px;
         border: 0;
         cursor: pointer;
 

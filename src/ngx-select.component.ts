@@ -51,7 +51,7 @@ export class NxgSelectComponent implements OnInit {
   @ViewChild('inputDOM') inputDOM: ElementRef;
   @ViewChild('inputFakeDOM') inputFakeDOM: ElementRef;
 
-  @ViewChild('controlDOM') controlDOM: ElementRef;
+  @ViewChild('selectDOM') selectDOM: ElementRef;
 
   public isOpen: boolean;
   public highlightedOptionIndex = -1;
@@ -66,7 +66,7 @@ export class NxgSelectComponent implements OnInit {
     this.filter();
 
     window.addEventListener('click', e => {
-      if (!this.controlDOM.nativeElement.contains(e.target)){
+      if (!this.selectDOM.nativeElement.contains(e.target)) {
         this.close();
       }
     });
@@ -166,10 +166,12 @@ export class NxgSelectComponent implements OnInit {
   highlightNextOption() {
     this.open();
 
-    if (this.highlightedOptionIndex >= this.filteredOptions.length - 1) {
-      this.highlightedOptionIndex = 0;
-    } else {
-      this.highlightedOptionIndex += 1;
+    if (this.filteredOptions && this.filteredOptions.length > 0) {
+      if (this.highlightedOptionIndex >= this.filteredOptions.length - 1) {
+        this.highlightedOptionIndex = 0;
+      } else {
+        this.highlightedOptionIndex += 1;
+      }
     }
   }
 
@@ -286,8 +288,11 @@ export class NxgSelectComponent implements OnInit {
       this.selectedOption = option;
     }
 
+    if (!this.isMultiple) {
+      this.close();
+    }
+
     this.inputValue = '';
-    this.close();
     this.filter();
 
     this.modelChange.emit(this._model);
