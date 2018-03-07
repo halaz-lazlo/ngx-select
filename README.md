@@ -40,3 +40,5 @@ imports: [..., NgxSelectModule, ...]
 |-|-|-
 (modelChange)|object|The changed model
 (inputChange)|string|When the filter input text changes
+(dropdownOpen)|null|Dropdown open
+(dropdownClose)|null|Dropdown close

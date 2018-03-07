@@ -57,6 +57,10 @@ export class NxgSelectComponent implements OnInit {
 
   @ViewChild('selectDOM') selectDOM: ElementRef;
 
+  // other events
+  @Output() dropdownOpen: EventEmitter<any> = new EventEmitter();
+  @Output() dropdownClose: EventEmitter<any> = new EventEmitter();
+
   // ui helpers
   public isOpen: boolean;
   public highlightedOptionIndex = -1;
@@ -66,6 +70,9 @@ export class NxgSelectComponent implements OnInit {
   public selectedOption: any;
   public selectedOptions: object[] = [];
   private isFirstInit = true;
+
+  private isTouched = false;
+  private isDirty = false;
 
   ngOnInit() {
     // filter options
@@ -138,11 +145,18 @@ export class NxgSelectComponent implements OnInit {
       ((this.filteredOptions && this.filteredOptions.length) || this.inputValue)
     ) {
       this.isOpen = true;
+      this.isTouched = true;
+
+      this.dropdownOpen.emit();
     }
   }
 
   close() {
     this.isOpen = false;
+
+    if (this.isTouched) {
+      this.dropdownClose.emit();
+    }
   }
 
   onInputChange() {
@@ -213,8 +227,6 @@ export class NxgSelectComponent implements OnInit {
         this.removeAllOption();
       }
     }
-
-    console.log(this.selectedOption, this.selectedOptions);
   }
 
   createOption() {
@@ -281,6 +293,7 @@ export class NxgSelectComponent implements OnInit {
       this.close();
     }
 
+    this.isDirty = true;
     this.inputValue = '';
     this.filter();
 
