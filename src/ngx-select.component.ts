@@ -153,9 +153,10 @@ export class NxgSelectComponent implements OnInit {
   }
 
   close() {
+    const wasOpen = this.isOpen;
     this.isOpen = false;
 
-    if (this.isTouched) {
+    if (wasOpen) {
       this.dropdownClose.emit();
     }
   }
@@ -290,6 +291,8 @@ export class NxgSelectComponent implements OnInit {
       this.selectedOption = option;
     }
 
+    this.modelChange.emit(this._model);
+
     if (!this.isMultiple) {
       this.close();
     }
@@ -297,8 +300,6 @@ export class NxgSelectComponent implements OnInit {
     this.isDirty = true;
     this.inputValue = '';
     this.filter();
-
-    this.modelChange.emit(this._model);
   }
 
   filter() {
