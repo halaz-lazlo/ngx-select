@@ -135,6 +135,8 @@ export class NxgSelectComponent implements OnInit {
   }
 
   focus() {
+    this.isTouched = true;
+
     this.open();
     this.inputDOM.nativeElement.focus();
   }
@@ -145,7 +147,6 @@ export class NxgSelectComponent implements OnInit {
       ((this.filteredOptions && this.filteredOptions.length) || this.inputValue)
     ) {
       this.isOpen = true;
-      this.isTouched = true;
 
       this.dropdownOpen.emit();
     }
