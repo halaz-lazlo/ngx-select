@@ -148,6 +148,10 @@ export class NxgSelectComponent implements OnInit {
     ) {
       this.isOpen = true;
 
+      if (this.highlightedOptionIndex < 0) {
+        this.highlightedOptionIndex = 0;
+      }
+
       this.dropdownOpen.emit();
     }
   }
@@ -288,7 +292,9 @@ export class NxgSelectComponent implements OnInit {
         this._model = option[this.valueField];
       }
 
-      this.selectedOption = option;
+      setTimeout(() => {
+        // this.selectedOption = option;
+      }, 100);
     }
 
     this.modelChange.emit(this._model);
@@ -351,7 +357,7 @@ export class NxgSelectComponent implements OnInit {
       }
     });
 
-    if (ind && ind >= 0) {
+    if (ind !== null) {
       return this._options[ind];
     } else {
       const selectedOption = {};
