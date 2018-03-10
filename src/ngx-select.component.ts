@@ -118,6 +118,8 @@ export class NxgSelectComponent implements OnInit {
           this.selectedOptions = selectedOptions;
         }
       }
+    } else {
+      this.selectedOption = null;
     }
   }
 
