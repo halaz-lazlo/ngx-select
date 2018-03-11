@@ -3,6 +3,12 @@
 
     $loader-size: 20px;
 
+    &,
+    *,
+    *::before {
+        box-sizing: border-box;
+    }
+
     &__control {
         position: relative;
         display: block;

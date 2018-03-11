@@ -1,6 +1,6 @@
 {
   "name": "@halaz.lazlo/ngx-select",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Angular select component",
   "main": "index.js",
   "scripts": {

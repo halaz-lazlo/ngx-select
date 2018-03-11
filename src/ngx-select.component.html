@@ -25,6 +25,8 @@
       #inputDOM
       class="ngx-select__input"
       type="text"
+      [(ngModel)]="inputValue"
+      [style.width.px]="inputWidth"
       (keydown.tab)="close()"
       (keydown.shift.tab)="close()"
       (keydown.arrowup)="highlightPrevOption()"
@@ -32,11 +34,8 @@
       (keydown.enter)="onEnter()"
       (keydown.backspace)="onBackspace()"
       (keydown.escape)="close()"
-      [(ngModel)]="inputValue"
-      (ngModelChange)="onInputChange($event)"
-      [style.width.px]="inputWidth">
-
-      <div class="ngx-select__input-fake" #inputFakeDOM>{{inputValue}}</div>
+      (ngModelChange)="onInputChange($event)">
+      <div #inputFakeDOM class="ngx-select__input-fake">{{inputValue}}</div>
 
       <div class="ngx-select__loader"></div>
   </div>

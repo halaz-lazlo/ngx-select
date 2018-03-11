@@ -50,7 +50,7 @@ export class NxgSelectComponent implements OnInit {
 
   // input
   public inputValue: string;
-  public inputWidth: number = 0;
+  public inputWidth: number;
   @Output() inputChange: EventEmitter<string> = new EventEmitter();
   @ViewChild('inputDOM') inputDOM: ElementRef;
   @ViewChild('inputFakeDOM') inputFakeDOM: ElementRef; // just a helper for calculating the input width
@@ -167,7 +167,7 @@ export class NxgSelectComponent implements OnInit {
     }
   }
 
-  onInputChange() {
+  onInputChange(inputValue) {
     setTimeout(() => {
       let inputWidth = 0;
       inputWidth = this.inputFakeDOM.nativeElement.clientWidth + 15;
