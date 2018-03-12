@@ -371,22 +371,36 @@ export class NxgSelectComponent implements OnInit {
   }
 
   private updateOptionsWithoutId() {
-    if (this._model && this._options) {
-      this._model.forEach((selectedOption, i) => {
-        // option has no value, must search, maybe options has item with async load
-        if (!selectedOption[this.valueField]) {
-          this._options.forEach(option => {
-            // we have a match
-            if (selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
-              selectedOption[this.valueField] = option[this.valueField];
-              selectedOption[this.labelField] = option[this.labelField];
+    if (this.model) {
+      if (this.isMultiple) {
+        if (this.isObjectValue) {
+          this._model.forEach((selectedOption, i) => {
+            // option has no value, must search, maybe options has item with async load
+            if (!selectedOption[this.valueField]) {
+              this._options.forEach(option => {
+                // we have a match
+                if (selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
+                  selectedOption[this.valueField] = option[this.valueField];
+                  selectedOption[this.labelField] = option[this.labelField];
 
-              this.selectedOptions[i][this.valueField] = option[this.valueField];
-              this.selectedOptions[i][this.labelField] = option[this.labelField];
+                  this.selectedOptions[i] = selectedOption;
+                }
+              });
             }
           });
         }
-      });
+      } else {
+        if (this.isObjectValue) {
+          this._options.forEach(option => {
+            if (this.model[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
+              this.model[this.labelField] = option[this.labelField];
+              this.model[this.valueField] = option[this.valueField];
+
+              this.selectedOption = option;
+            }
+          });
+        }
+      }
     }
   }
 }
