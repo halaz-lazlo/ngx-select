@@ -14,7 +14,8 @@ export class NxgSelectComponent implements OnInit {
     this._options = options;
 
     if (!this.isFirstInit) {
-        this.filter();
+      this.filter();
+      this.updateOptionsWithoutId();
     }
   };
   get options(): object[] {
@@ -367,5 +368,23 @@ export class NxgSelectComponent implements OnInit {
 
       return selectedOption;
     }
+  }
+
+  private updateOptionsWithoutId() {
+    this._model.forEach((selectedOption, i) => {
+      // option has no value, must search, maybe options has item with async load
+      if (!selectedOption[this.valueField]) {
+        this._options.forEach(option => {
+          // we have a match
+          if (selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
+            selectedOption[this.valueField] = option[this.valueField];
+            selectedOption[this.labelField] = option[this.labelField];
+
+            this.selectedOptions[i][this.valueField] = option[this.valueField];
+            this.selectedOptions[i][this.labelField] = option[this.labelField];
+          }
+        });
+      }
+    });
   }
 }
