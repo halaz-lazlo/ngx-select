@@ -33,6 +33,7 @@ imports: [..., NgxSelectModule, ...]
 [isMultiple]|boolean|false|Multiselect
 [allowAdd]|boolean|false|Allows adding new option
 [isObjectValue]|boolean|false|Sets the model the whole option object
+[maxItems]|number|undefined|If multiple, how many items can be add to array
 [isLoading]|boolean|false|Is waiting for async call, a spinner is visible
 [placeholder]|string|undefined|The placeholder
 [dropdownDirection]|['up', 'down']|down|Which direction the dropdown opens
