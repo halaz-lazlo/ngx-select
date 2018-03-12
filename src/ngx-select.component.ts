@@ -42,6 +42,7 @@ export class NxgSelectComponent implements OnInit {
   @Input() isObjectValue?: boolean;
   @Input() isMultiple?: boolean;
   @Input() allowAdd?: boolean;
+  @Input() maxItems?: number;
   @Input() isLoading?: boolean;
   @Input() dropdownDirection?: string = 'down';
   @Input() noFilterResultsMsg?: string = 'No results';
@@ -280,23 +281,21 @@ export class NxgSelectComponent implements OnInit {
         this._model = [];
       }
 
-      if (this.isObjectValue) {
-        this._model.push(option);
-      } else {
-        this._model.push(option[this.valueField]);
-      }
+      if (!this.maxItems || this._model.length < this.maxItems) {
+        if (this.isObjectValue) {
+          this._model.push(option);
+        } else {
+          this._model.push(option[this.valueField]);
+        }
 
-      this.selectedOptions.push(option);
+        this.selectedOptions.push(option);
+      }
     } else {
       if (this.isObjectValue) {
         this._model = option;
       } else {
         this._model = option[this.valueField];
       }
-
-      setTimeout(() => {
-        // this.selectedOption = option;
-      }, 100);
     }
 
     this.modelChange.emit(this._model);
