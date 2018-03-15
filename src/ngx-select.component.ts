@@ -109,18 +109,9 @@ export class NxgSelectComponent implements OnInit {
     this.updateAvailableOptions();
 
     window.addEventListener('click', e => {
-      if (this.isOpen) {
-        if (
-          !this.selectDOM.nativeElement.contains(e.target) &&
-          (
-            !this.isMultiple || (
-              !e.target['classList'].contains('ngx-select__option') &&
-              !e.target['classList'].contains('ngx-select__option-mark')
-            )
-          )
-        ) {
-          this.close();
-        }
+      console.log(e.target);
+      if (this.isOpen && !this.selectDOM.nativeElement.contains(e.target)) {
+        this.close();
       }
     });
 
@@ -351,8 +342,10 @@ export class NxgSelectComponent implements OnInit {
     this.isDirty = true;
     this.inputValue = '';
 
-    this.updateModel();
-    this.updateAvailableOptions();
+    setTimeout(() => {
+      this.updateModel();
+      this.updateAvailableOptions();
+    }, 1);
   }
 
   private updateAvailableOptions() {

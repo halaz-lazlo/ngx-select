@@ -89,26 +89,30 @@
             </div>
           </div>
 
-          <div
-            *ngIf="!inputValue && isAllOptionSelected"
-            class="ngx-select__option ngx-select__option--all-options-selected">
-            {{allOptionSelectedMsg}}
-          </div>
-
+          <!-- no option available msg -->
           <div
             *ngIf="!inputValue && !isOptionAvailable"
             class="ngx-select__option ngx-select__option--no-option-available">
             {{noOptionAvailableMsg}}
           </div>
 
+          <!-- no results available -->
           <div
-            *ngIf="!allowAdd && (!availableOptions || availableOptions.length === 0)"
+            *ngIf="inputValue && !allowAdd && ((!isMobile && availableOptions.length === 0) || (isMobile && availableOptionsMobile.length === 0))"
             class="ngx-select__option ngx-select__option--no-result">
             {{noFilterResultsMsg}}
           </div>
 
+          <!-- all options selected msg -->
           <div
-            *ngIf="allowAdd && inputValue && (!availableOptions || availableOptions.length === 0)"
+            *ngIf="!inputValue && !isMobile && isAllOptionSelected"
+            class="ngx-select__option ngx-select__option--all-options-selected">
+            {{allOptionSelectedMsg}}
+          </div>
+
+          <!-- add new option -->
+          <div
+            *ngIf="inputValue && allowAdd && ((!isMobile && availableOptions.length === 0) || (isMobile && availableOptionsMobile.length === 0))"
             class="ngx-select__option ngx-select__option--add-new"
             (click)="createOption()">
             {{addOptionMessage}}
