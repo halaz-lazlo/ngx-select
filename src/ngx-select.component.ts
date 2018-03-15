@@ -383,7 +383,6 @@ export class NxgSelectComponent implements OnInit {
       // translate for UI
       filteredOptions.forEach(option => {
         const isOptionSelected = this.isOptionSelected(option);
-        // console.log(option, isOptionSelected);
 
         if (!isOptionSelected) {
           isAllOptionSelected = false;
@@ -420,9 +419,13 @@ export class NxgSelectComponent implements OnInit {
 
       isOptionSelected = !!isSelected;
     } else {
-      if (option === this.selectedOption) {
-        isOptionSelected = true;
+      let equals = this.selectedOption[this.labelField] === option[this.labelField];
+
+      if (!this.allowAdd) {
+        equals = equals && this.selectedOption[this.valueField] === option[this.valueField];
       }
+
+      isOptionSelected = equals;
     }
 
     return isOptionSelected;

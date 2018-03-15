@@ -59,12 +59,8 @@
             <div
               *ngFor="let option of availableOptionsMobile; let i = index"
               class="ngx-select__option"
-              [ngClass]="{
-                'ngx-select__option--selected': option.isSelected,
-                'ngx-select__option--highlighted': highlightedOptionIndex === i
-              }"
-              (click)="option.isSelected ? removeFilteredOption(option.data) : selectOption(option.data)"
-              (mouseenter)="highlightOption(i)">
+              [ngClass]="{'ngx-select__option--selected': option.isSelected}"
+              (click)="option.isSelected ? removeFilteredOption(option.data) : selectOption(option.data)">
               {{option.data[labelField]}}
               <div
                 class="ngx-select__option-mark"
