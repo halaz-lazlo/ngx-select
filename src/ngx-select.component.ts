@@ -290,7 +290,9 @@ export class NxgSelectComponent implements OnInit {
     newOption[this.valueField] = null;
     newOption[this.labelField] = this.inputValue;
 
-    this.selectOption(newOption);
+    setTimeout(() => {
+      this.selectOption(newOption);
+    }, 1);
   }
 
   removeOption(i) {
