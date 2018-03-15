@@ -1,3 +1,5 @@
+@import 'scss/helpers/all';
+
 .ngx-select {
     position: relative;
 
@@ -38,40 +40,6 @@
         }
     }
 
-    &__tags {
-        display: inline-block;
-    }
-
-    &__tag {
-        position: relative;
-        display: inline-block;
-        margin: 5px 5px 0 0;
-        padding: 4px 25px 4px 4px;
-        padding-left: 7px;
-        background: #eee;
-        font-size: 12px;
-
-        &-remove {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 20px;
-            background: #ddd;
-            text-align: center;
-            line-height: 25px;
-            cursor: pointer;
-
-            &:hover {
-                background: #ccc;
-            }
-
-            &::after {
-                content: 'x';
-            }
-        }
-    }
-
     &__placeholder {
         position: absolute;
         top: 0;
@@ -87,13 +55,17 @@
     }
 
     &__input {
-        display: inline-block;
+        display: none;
         margin-top: 5px;
         min-width: 10px;
         min-height: 26px;
         width: 0;
         border: 0;
         cursor: pointer;
+
+        @include respond-to('md') {
+            display: inline-block;
+        }
 
         &:focus {
             outline: 0;
@@ -109,46 +81,225 @@
 
     &__value {
         display: inline-block;
+        margin: 5px 5px 0 0;
+    }
+
+    &__tags {
+        display: inline-block;
+    }
+
+    &__tag {
+        position: relative;
+        display: inline-block;
+        margin: 5px 5px 0 0;
+        padding: 4px;
+        padding-left: 7px;
+        background: #eee;
+        font-size: 12px;
+
+        @include respond-to('md') {
+            padding-right: 25px;
+        }
+
+        &-remove {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            display: none;
+            width: 20px;
+            background: #ddd;
+            text-align: center;
+            line-height: 25px;
+            cursor: pointer;
+
+            @include respond-to('md') {
+                display: block;
+            }
+
+            &:hover {
+                background: #ccc;
+            }
+
+            &::after {
+                content: 'x';
+            }
+        }
     }
 
     &__dropdown {
-        position: absolute;
-        top: calc(100% + 2px);
+        position: fixed;
+        top: 0;
         right: 0;
+        bottom: 0;
         left: 0;
-        z-index: 1;
+        z-index: z-index('dominant');
         display: none;
-        border: #aaa solid 1px;
-        border-radius: 3px;
-        background: #fff;
+        background: rgba(color('black'), .2);
 
-        .ngx-select--dropdown-up & {
-            top: auto;
-            bottom: calc(100% + 2px);
+        @include respond-to('md') {
+            position: absolute;
+            top: calc(100% + 2px);
+            right: 0;
+            bottom: auto;
+            left: 0;
+            z-index: 1;
+            display: none;
+            border: #aaa solid 1px;
+            border-radius: 3px;
+            background: #fff;
+
+            .ngx-select--dropdown-up & {
+                top: auto;
+                bottom: calc(100% + 2px);
+            }
+        }
+
+        &-body {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            bottom: 15px;
+            left: 15px;
+
+            @include respond-to('md') {
+                position: relative;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        }
+
+        &-container {
+            background: color('white');
+        }
+
+        &-input {
+            display: block;
+            padding: 5px 15px;
+            min-height: 45px;
+            width: 100%;
+            border: 0;
+
+            @include respond-to('md') {
+                display: none;
+            }
+        }
+
+        &-btns {
+            padding: 10px 15px;
+            text-align: right;
+
+            @include respond-to('md') {
+                display: none;
+            }
+        }
+
+        &-btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 0;
+            background: none;
+            vertical-align: middle;
+        }
+    }
+
+    &__options {
+        overflow-y: auto;
+
+        @include respond-to('md') {
+            max-height: none !important;
         }
     }
 
     &__option {
-        padding: 2px 10px;
+        position: relative;
+        padding: 10px 15px;
 
-        &--selected,
-        &--highlighted,
-        &--add-new {
-            display: block;
-            cursor: pointer;
+        &--all-options-selected {
+            display: none;
         }
 
-        &--selected {
-            background: #efefef;
+        @include respond-to('md') {
+            padding: 2px 10px;
+
+            &--selected,
+            &--highlighted,
+            &--add-new {
+                display: block;
+                cursor: pointer;
+            }
+
+            &--selected {
+                background: #efefef;
+
+                .ngx-select--multiple & {
+                    display: none;
+                }
+            }
+
+            &--highlighted,
+            &--add-new {
+                background: #ddd;
+            }
+
+            &--all-options-selected {
+                display: block;
+            }
         }
 
-        &--highlighted,
-        &--add-new {
-            background: #ddd;
-        }
+        &-mark {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            width: 20px;
+            height: 20px;
+            border: color('alto') solid 1px;
+            transform: translateY(-50%);
 
-        &--no-result {
-            font-size: 14px;
+            @include respond-to('md') {
+                display: none;
+            }
+
+            .ngx-select--multiple & {
+                &--selected {
+                    border-color: color('dusty-gray');
+
+                    &::after {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        display: block;
+                        width: 5px;
+                        height: 10px;
+                        border: solid color('dusty-gray');
+                        border-width: 0 2px 2px 0;
+                        content: '';
+                        transform: translate(-50%, -50%) rotate(45deg);
+                    }
+                }
+            }
+
+            .ngx-select--single & {
+                border-radius: 50%;
+
+                &--selected {
+                    border-color: color('dusty-gray');
+
+                    &::after {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: color('dusty-gray');
+                        content: '';
+                        transform: translate(-50%, -50%);
+                    }
+                }
+            }
         }
     }
 
@@ -192,23 +343,22 @@
         }
     }
 }
-@-webkit-keyframes load8 {
+
+@keyframes load8 {
   0% {
-    -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
   100% {
-    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
-@keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
+
+.body {
+    &--ngx-selext-open {
+        overflow-y: hidden;
+
+        @include respond-to('md') {
+            overflow-y: auto;
+        }
+    }
 }

@@ -1,5 +1,12 @@
 import { Component, OnInit, Input, EventEmitter, Output, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 
+class AvailableOption {
+  constructor(
+    public isSelected: boolean,
+    public data: any
+  ) {}
+}
+
 @Component({
   selector: 'ngx-select',
   templateUrl: './ngx-select.component.html',
@@ -14,8 +21,8 @@ export class NxgSelectComponent implements OnInit {
     this._options = options;
 
     if (!this.isFirstInit) {
-      this.filter();
-      this.updateOptionsWithoutId();
+      this.updateAvailableOptions();
+      this.updateAvailableOptionsWithoutId();
     }
   };
   get options(): object[] {
@@ -46,7 +53,11 @@ export class NxgSelectComponent implements OnInit {
   @Input() maxItems?: number;
   @Input() isLoading?: boolean;
   @Input() dropdownDirection?: string = 'down';
+
+  // messages
+  @Input() noOptionAvailableMsg?: string = 'No options available, try searching...';
   @Input() noFilterResultsMsg?: string = 'No results';
+  @Input() allOptionSelectedMsg?: string = 'All options have been selected';
   @Input() addOptionMsg?: string = 'Add {{input}}...';
   public addOptionMessage: string;
 
@@ -57,42 +68,80 @@ export class NxgSelectComponent implements OnInit {
   @ViewChild('inputDOM') inputDOM: ElementRef;
   @ViewChild('inputFakeDOM') inputFakeDOM: ElementRef; // just a helper for calculating the input width
 
+  // mobile features
+  @ViewChild('dropdownDOM') dropdownDOM: ElementRef;
+  @ViewChild('dropdownBtnsDOM') dropdownBtnsDOM: ElementRef;
+  @ViewChild('dropdownInputDOM') dropdownInputDOM: ElementRef;
+  public dropdownOptionsHeight: number;
+
   @ViewChild('selectDOM') selectDOM: ElementRef;
 
   // other events
   @Output() dropdownOpen: EventEmitter<any> = new EventEmitter();
   @Output() dropdownClose: EventEmitter<any> = new EventEmitter();
 
+  // data helpers
+  public availableOptionsMobile: AvailableOption[];
+  public availableOptions: AvailableOption[];
+  public selectedOption: any;
+  public selectedOptions: object[] = [];
+  public isAllOptionSelected: boolean;
+  public isOptionAvailable: boolean;
+  private isFirstInit = true;
+
   // ui helpers
   public isOpen: boolean;
   public highlightedOptionIndex = -1;
-
-  // helpers
-  public filteredOptions: object[];
-  public selectedOption: any;
-  public selectedOptions: object[] = [];
-  private isFirstInit = true;
+  public isAddBtnVisible: boolean;
+  public isMobile: boolean;
 
   private isTouched = false;
   private isDirty = false;
 
   ngOnInit() {
-    // filter options
-    this.filter();
-
     // init fake input
     this.initFakeInput();
 
     // set selected
     this.initSelectedOption();
 
+    // filter options
+    this.updateAvailableOptions();
+
     window.addEventListener('click', e => {
-      if (!this.selectDOM.nativeElement.contains(e.target)) {
-        this.close();
+      if (this.isOpen) {
+        if (
+          !this.selectDOM.nativeElement.contains(e.target) &&
+          (
+            !this.isMultiple || (
+              !e.target['classList'].contains('ngx-select__option') &&
+              !e.target['classList'].contains('ngx-select__option-mark')
+            )
+          )
+        ) {
+          this.close();
+        }
       }
     });
 
+    // dropdown height resize
+    window.addEventListener('resize', () => {
+      if (this.isOpen) {
+        this.calculateDropdownOptionsHeight();
+        this.updateIsMobile();
+      }
+    }, true);
+
     this.isFirstInit = false;
+
+    if (
+      this.allowAdd &&
+      this.labelField !== this.valueField &&
+      this.isMultiple &&
+      !this.isObjectValue
+    ) {
+      console.error('this is a dangerous config');
+    }
   }
 
   initSelectedOption() {
@@ -146,25 +195,28 @@ export class NxgSelectComponent implements OnInit {
   }
 
   open() {
-    if (
-      (this.allowAdd && this.inputValue) ||
-      ((this.filteredOptions && this.filteredOptions.length) || this.inputValue)
-    ) {
-      this.isOpen = true;
+    this.isOpen = true;
 
-      if (this.highlightedOptionIndex < 0) {
-        this.highlightedOptionIndex = 0;
-      }
-
-      this.dropdownOpen.emit();
+    if (this.highlightedOptionIndex < 0) {
+      this.highlightedOptionIndex = 0;
     }
+
+    setTimeout(() => {
+      this.calculateDropdownOptionsHeight();
+      this.updateIsMobile();
+    }, 1);
+
+    document.body.classList.add('body--ngx-selext-open');
+
+    this.dropdownOpen.emit();
   }
 
   close() {
-    const wasOpen = this.isOpen;
-    this.isOpen = false;
+    if (this.isOpen) {
+      this.isOpen = false;
 
-    if (wasOpen) {
+      document.body.classList.remove('body--ngx-selext-open');
+
       this.dropdownClose.emit();
     }
   }
@@ -181,8 +233,14 @@ export class NxgSelectComponent implements OnInit {
       this.inputWidth = inputWidth;
     }, 10);
 
+    if (inputValue) {
+      this.highlightedOptionIndex = 0;
+    } else {
+      this.isAddBtnVisible = false;
+    }
+
     this.open();
-    this.filter();
+    this.updateAvailableOptions();
 
     this.addOptionMessage = this.addOptionMsg.replace('{{input}}', this.inputValue);
 
@@ -193,7 +251,7 @@ export class NxgSelectComponent implements OnInit {
     this.open();
 
     if (this.highlightedOptionIndex <= 0) {
-      this.highlightedOptionIndex = this.filteredOptions.length - 1;
+      this.highlightedOptionIndex = this.availableOptions.length - 1;
     } else {
       this.highlightedOptionIndex -= 1;
     }
@@ -202,8 +260,8 @@ export class NxgSelectComponent implements OnInit {
   highlightNextOption() {
     this.open();
 
-    if (this.filteredOptions && this.filteredOptions.length > 0) {
-      if (this.highlightedOptionIndex >= this.filteredOptions.length - 1) {
+    if (this.availableOptions && this.availableOptions.length > 0) {
+      if (this.highlightedOptionIndex >= this.availableOptions.length - 1) {
         this.highlightedOptionIndex = 0;
       } else {
         this.highlightedOptionIndex += 1;
@@ -216,14 +274,14 @@ export class NxgSelectComponent implements OnInit {
   }
 
   onEnter() {
-    if (this.allowAdd) {
-      if (this.filteredOptions && this.filteredOptions.length > 0) {
-        this.selectOption(this.filteredOptions[this.highlightedOptionIndex]);
-      } else {
-        this.createOption();
+    const option = this.availableOptions[this.highlightedOptionIndex];
+
+    if (option) {
+      if (!option.isSelected) {
+        this.selectOption(this.availableOptions[this.highlightedOptionIndex].data);
       }
-    } else if (this.highlightedOptionIndex >= 0) {
-      this.selectOption(this.filteredOptions[this.highlightedOptionIndex]);
+    } else if (this.allowAdd) {
+      this.createOption();
     }
   }
 
@@ -245,7 +303,7 @@ export class NxgSelectComponent implements OnInit {
     newOption[this.labelField] = this.inputValue;
 
     if (this.isMultiple) {
-      if (!this.isOptionInModel(newOption)) {
+      if (!this.isOptionSelected(newOption)) {
         this.selectOption(newOption);
       }
     } else {
@@ -254,112 +312,132 @@ export class NxgSelectComponent implements OnInit {
   }
 
   removeOption(i) {
-    this._model.splice(i, 1);
     this.selectedOptions.splice(i, 1);
 
-    this.filter();
-    this.modelChange.emit(this._model);
+    this.updateAvailableOptions();
+    this.updateModel();
   }
 
   removeLastOption() {
-    if (this._model && this._model.length > 0) {
-      this.removeOption(this._model.length - 1);
+    if (this.selectedOptions.length) {
+      this.removeOption(this.selectedOptions.length - 1);
     }
   }
 
   removeAllOption() {
-    this._model = null;
     this.selectedOption = null;
     this.selectedOptions = null;
-    this.filter();
+    this.updateAvailableOptions();
+    this.updateModel();
+  }
 
-    this.modelChange.emit(this._model);
+  removeFilteredOption(option) {
+    this.selectedOptions.forEach((o, i) => {
+      if (o[this.labelField] === option[this.labelField]) {
+        this.removeOption(i);
+      }
+    });
   }
 
   selectOption(option) {
     if (this.isMultiple) {
-      if (!this._model) {
-        this._model = [];
-      }
-
-      if (!this.maxItems || this._model.length < this.maxItems) {
-        if (this.isObjectValue) {
-          this._model.push(option);
-        } else {
-          this._model.push(option[this.valueField]);
-        }
-
+      if (!this.maxItems || this.selectedOptions.length < this.maxItems) {
         this.selectedOptions.push(option);
       }
     } else {
-      if (this.isObjectValue) {
-        this._model = option;
-      } else {
-        this._model = option[this.valueField];
-      }
-    }
-
-    this.modelChange.emit(this._model);
-
-    if (!this.isMultiple) {
-      this.close();
+      this.selectedOption = option;
     }
 
     this.isDirty = true;
     this.inputValue = '';
-    this.filter();
+
+    this.updateModel();
+    this.updateAvailableOptions();
   }
 
-  filter() {
-    if (this._options) {
-      this.filteredOptions = this._options.filter(option => {
-        if (option[this.labelField]) {
-          let isFiltered = !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue) >= 0;
+  private updateAvailableOptions() {
+    let isOptionAvailable = true;
+    let isAllOptionSelected = true;
+    const availableOptions = [];
+    const availableOptionsMobile = [];
 
-          // is already selected
-          if (this._model && this.isMultiple) {
-            if (this.isOptionInModel(option)) {
-              isFiltered = false;
+    if (this._options && this.options.length) {
+      // add user added options
+      const options = this._options.map(x => Object.assign({}, x));
+      if (this.allowAdd) {
+        if (this.isMultiple && this.selectedOptions) {
+          // add options to filtered options
+          this.selectedOptions.forEach(selectedOption => {
+            const index = options.findIndex(option => {
+              return option[this.labelField] === selectedOption[this.labelField];
+            });
+
+            if (index < 0) {
+              options.unshift(selectedOption);
             }
-          }
+          });
+        }
+      }
 
-          return isFiltered;
+      // filter options
+      const filteredOptions = options.filter(option => {
+        if (option[this.labelField]) {
+          return !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue) >= 0;
         } else {
-          console.error('you sure the labelField is correct?');
+          console.error(`${this.labelField} property doesn't exist on: `, option);
 
           return false;
         }
       });
+
+      // translate for UI
+      filteredOptions.forEach(option => {
+        const isOptionSelected = this.isOptionSelected(option);
+        // console.log(option, isOptionSelected);
+
+        if (!isOptionSelected) {
+          isAllOptionSelected = false;
+          availableOptions.push(new AvailableOption(isOptionSelected, option))
+        }
+
+        availableOptionsMobile.push(new AvailableOption(isOptionSelected, option));
+      });
+    } else {
+      isOptionAvailable = false;
+      isAllOptionSelected = false;
     }
+
+    this.availableOptions = availableOptions;
+    this.availableOptionsMobile = availableOptionsMobile;
+
+    this.isAllOptionSelected = isAllOptionSelected;
+    this.isOptionAvailable = isOptionAvailable;
   }
 
-  private isOptionInModel(option): boolean {
-    let isOptionInModel = false;
-    if (this._model) {
-      const items = this._model.filter(modelItem => {
-        if (this.isObjectValue) {
-          return modelItem[this.labelField] === option[this.labelField];
-        } else {
-          return modelItem === option[this.valueField];
-        }
+  private isOptionSelected(option): boolean {
+    let isOptionSelected = false;
+
+    if (this.isMultiple) {
+      const isSelected = this.selectedOptions.find(selectedOption => {
+        return selectedOption[this.valueField] === option[this.valueField] && selectedOption[this.labelField] === option[this.labelField];
       });
 
-      isOptionInModel = items.length > 0;
+      isOptionSelected = !!isSelected;
+    } else {
+      if (option === this.selectedOption) {
+        isOptionSelected = true;
+      }
     }
 
-    return isOptionInModel;
+    return isOptionSelected;
   }
 
   private getOptionByValue(value) {
-    let ind = null;
-
-    this._options.forEach((option, i) => {
-      if (option[this.valueField] === value) {
-        ind = i;
-      }
+    const ind = this._options.findIndex(option => {
+      return option[this.valueField] === value;
     });
 
-    if (ind !== null) {
+    if (ind >= 0) {
       return this._options[ind];
     } else {
       const selectedOption = {};
@@ -370,37 +448,65 @@ export class NxgSelectComponent implements OnInit {
     }
   }
 
-  private updateOptionsWithoutId() {
-    if (this.model) {
-      if (this.isMultiple) {
-        if (this.isObjectValue) {
-          this._model.forEach((selectedOption, i) => {
-            // option has no value, must search, maybe options has item with async load
-            if (!selectedOption[this.valueField]) {
-              this._options.forEach(option => {
-                // we have a match
-                if (selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
-                  selectedOption[this.valueField] = option[this.valueField];
-                  selectedOption[this.labelField] = option[this.labelField];
-
-                  this.selectedOptions[i] = selectedOption;
-                }
-              });
+  private updateAvailableOptionsWithoutId() {
+    if (this.selectedOptions.length) {
+      this.selectedOptions.forEach((selectedOption, i) => {
+        // option has no value, must search, maybe options has item with async load
+        if (!selectedOption[this.valueField]) {
+          this._options.forEach(option => {
+            // we have a match
+            if (selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
+              this.selectedOptions[i] = option;
             }
           });
         }
-      } else {
-        if (this.isObjectValue) {
-          this._options.forEach(option => {
-            if (this.model[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
-              this.model[this.labelField] = option[this.labelField];
-              this.model[this.valueField] = option[this.valueField];
+      });
 
-              this.selectedOption = option;
-            }
-          });
+      this.updateAvailableOptions();
+      this.updateModel();
+    }
+  }
+
+  private updateModel() {
+    let model;
+
+    if (this.isMultiple) {
+      if (this.selectedOptions.length) {
+        model = [];
+
+        this.selectedOptions.forEach(selectedOption => {
+          if (this.isObjectValue) {
+            model.push(selectedOption);
+          } else {
+            model.push(selectedOption[this.valueField]);
+          }
+        });
+      }
+    } else {
+      if (this.selectedOption) {
+        if (this.isObjectValue) {
+          model = this.selectedOption;
+        } else {
+          model = this.selectedOption[this.valueField];
         }
       }
     }
+
+    this._model = model;
+
+    this.modelChange.emit(this._model);
+  }
+
+  // mobile features
+  private calculateDropdownOptionsHeight() {
+    const wrapHeight = this.dropdownDOM.nativeElement.clientHeight;
+    const inputHeight = this.dropdownBtnsDOM.nativeElement.clientHeight;
+    const btnsHeight = this.dropdownInputDOM.nativeElement.clientHeight;
+
+    this.dropdownOptionsHeight = wrapHeight - (inputHeight + btnsHeight);
+  }
+
+  private updateIsMobile() {
+    this.isMobile = screen.width < 768;
   }
 }

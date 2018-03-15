@@ -37,7 +37,9 @@ imports: [..., NgxSelectModule, ...]
 [isLoading]|boolean|false|Is waiting for async call, a spinner is visible
 [placeholder]|string|undefined|The placeholder
 [dropdownDirection]|['up', 'down']|down|Which direction the dropdown opens
+[noOptionAvailableMsg]|string|No options available, try searching...|When options is empty or not defined
 [noFilterResultsMsg]|string|No results|The message shown when no filtered result is found
+[allOptionSelectedMsg]|string|All options have been selected|All options have been selected
 [addOptionMsg]|string|Add {{input}}...|The message when isMultiple === true, the {{input}} is replaced with the value in the input
 
 ## Available events

@@ -1,0 +1,37 @@
+// http://chir.ag/projects/name-that-color/
+$colors: (
+    // gray shades
+    'black': #000,
+    'dusty-gray': #A8989B,
+    'alto': #dbdbdb,
+    'gallery': #eee,
+    'white': #fff
+);
+
+$media-queries: (
+    'sm': 576,
+    'md': 768,
+    'lg': 992,
+    'xl': 1200
+);
+
+// Font weights
+// http://www.webtype.com/info/articles/fonts-weights/
+$font-weights: (
+);
+
+// z-indexes
+// https://www.viget.com/articles/sass-maps-and-z-indexes
+$z-indexes: (
+    'modal': 5,
+    'nav': 4,
+    'dominant': 2,
+    'default': 1,
+    'overlay': 0,
+    'below': -1
+);
+
+$font-1: 'roboto', Helvetica, Arial, sans-serif;
+$font-2: 'lora', Georgia, "Bitstream Charter", "URW Bookman L", serif;
+
+$baseline-px: 16px;
