@@ -80,7 +80,7 @@
                 'ngx-select__option--selected': option.isSelected,
                 'ngx-select__option--highlighted': highlightedOptionIndex === i
               }"
-              (click)="option.isSelected ? removeFilteredOption(option.data) : selectOption(option.data)"
+              (click)="selectOption(option.data)"
               (mouseenter)="highlightOption(i)">
               {{option.data[labelField]}}
               <div

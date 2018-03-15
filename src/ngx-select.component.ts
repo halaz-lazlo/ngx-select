@@ -109,7 +109,6 @@ export class NxgSelectComponent implements OnInit {
     this.updateAvailableOptions();
 
     window.addEventListener('click', e => {
-      console.log(e.target);
       if (this.isOpen && !this.selectDOM.nativeElement.contains(e.target)) {
         this.close();
       }
@@ -268,9 +267,7 @@ export class NxgSelectComponent implements OnInit {
     const option = this.availableOptions[this.highlightedOptionIndex];
 
     if (option) {
-      if (!option.isSelected) {
-        this.selectOption(this.availableOptions[this.highlightedOptionIndex].data);
-      }
+      this.selectOption(this.availableOptions[this.highlightedOptionIndex].data);
     } else if (this.allowAdd) {
       this.createOption();
     }
@@ -293,13 +290,7 @@ export class NxgSelectComponent implements OnInit {
     newOption[this.valueField] = null;
     newOption[this.labelField] = this.inputValue;
 
-    if (this.isMultiple) {
-      if (!this.isOptionSelected(newOption)) {
-        this.selectOption(newOption);
-      }
-    } else {
-      this.selectOption(newOption);
-    }
+    this.selectOption(newOption);
   }
 
   removeOption(i) {
@@ -331,21 +322,23 @@ export class NxgSelectComponent implements OnInit {
   }
 
   selectOption(option) {
-    if (this.isMultiple) {
-      if (!this.maxItems || this.selectedOptions.length < this.maxItems) {
-        this.selectedOptions.push(option);
+    if (!this.isOptionSelected(option)) {
+      if (this.isMultiple) {
+        if (!this.maxItems || this.selectedOptions.length < this.maxItems) {
+          this.selectedOptions.push(option);
+        }
+      } else {
+        this.selectedOption = option;
       }
-    } else {
-      this.selectedOption = option;
+
+      this.isDirty = true;
+      this.inputValue = '';
+
+      setTimeout(() => {
+        this.updateModel();
+        this.updateAvailableOptions();
+      }, 1);
     }
-
-    this.isDirty = true;
-    this.inputValue = '';
-
-    setTimeout(() => {
-      this.updateModel();
-      this.updateAvailableOptions();
-    }, 1);
   }
 
   private updateAvailableOptions() {
@@ -412,7 +405,13 @@ export class NxgSelectComponent implements OnInit {
 
     if (this.isMultiple) {
       const isSelected = this.selectedOptions.find(selectedOption => {
-        return selectedOption[this.valueField] === option[this.valueField] && selectedOption[this.labelField] === option[this.labelField];
+        let equals = selectedOption[this.labelField] === option[this.labelField];
+
+        if (!this.allowAdd) {
+          equals = equals && selectedOption[this.valueField] === option[this.valueField];
+        }
+
+        return equals;
       });
 
       isOptionSelected = !!isSelected;
