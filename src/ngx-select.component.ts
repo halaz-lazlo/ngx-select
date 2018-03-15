@@ -294,6 +294,16 @@ export class NxgSelectComponent implements OnInit {
   }
 
   removeOption(i) {
+    if (this.isOpen) {
+      setTimeout(() => {
+        this.removeOptionByIndex(i);
+      }, 1);
+    } else {
+      this.removeOptionByIndex(i);
+    }
+  }
+
+  removeOptionByIndex(i: number) {
     this.selectedOptions.splice(i, 1);
 
     this.updateAvailableOptions();
@@ -302,13 +312,14 @@ export class NxgSelectComponent implements OnInit {
 
   removeLastOption() {
     if (this.selectedOptions.length) {
-      this.removeOption(this.selectedOptions.length - 1);
+      this.removeOptionByIndex(this.selectedOptions.length - 1);
     }
   }
 
   removeAllOption() {
     this.selectedOption = null;
     this.selectedOptions = null;
+
     this.updateAvailableOptions();
     this.updateModel();
   }
@@ -354,7 +365,6 @@ export class NxgSelectComponent implements OnInit {
     if (this._options && this.options.length) {
       // add user added options
       const options = this._options.map(x => Object.assign({}, x));
-      if (this.allowAdd) {
         if (this.isMultiple && this.selectedOptions) {
           // add options to filtered options
           this.selectedOptions.forEach(selectedOption => {
@@ -366,7 +376,6 @@ export class NxgSelectComponent implements OnInit {
               options.unshift(selectedOption);
             }
           });
-        }
       }
 
       // filter options
