@@ -15,10 +15,15 @@
         position: relative;
         display: block;
         padding: 0 70px 5px 10px;
+        min-height: 40px;
         border: #aaa solid 1px;
         border-radius: 3px;
         background: #fff;
         cursor: pointer;
+
+        @include respond-to('md') {
+            min-height: auto;
+        }
 
         &::before {
             position: absolute;
