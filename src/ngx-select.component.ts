@@ -204,6 +204,7 @@ export class NxgSelectComponent implements OnInit {
   close() {
     if (this.isOpen) {
       this.isOpen = false;
+      this.inputValue = '';
 
       document.body.classList.remove('body--ngx-selext-open');
 
