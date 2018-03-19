@@ -187,8 +187,6 @@ export class NxgSelectComponent implements OnInit {
   open() {
     this.isOpen = true;
 
-    console.log('shiiit');
-
     if (this.highlightedOptionIndex < 0) {
       this.highlightedOptionIndex = 0;
     }

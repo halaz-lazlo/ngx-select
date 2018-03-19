@@ -21,5 +21,6 @@
   "bugs": {
     "url": "https://github.com/halaz-lazlo/ngx-select/issues"
   },
-  "homepage": "https://github.com/halaz-lazlo/ngx-select#readme"
+  "homepage": "https://github.com/halaz-lazlo/ngx-select#readme",
+  "dependencies": {}
 }
