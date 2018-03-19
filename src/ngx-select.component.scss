@@ -41,7 +41,7 @@
 
     &__placeholder {
         position: absolute;
-        top: 0;
+        top: 50%;
         right: 0;
         bottom: 0;
         left: 0;
@@ -50,7 +50,7 @@
         color: #aaa;
         text-overflow: ellipsis;
         white-space: nowrap;
-        line-height: 40px;
+        transform: translateY(-50%);
     }
 
     &__input {
@@ -216,10 +216,6 @@
         position: relative;
         padding: 10px 15px;
 
-        &--all-options-selected {
-            display: none;
-        }
-
         @include respond-to('md') {
             padding: 2px 10px;
 
@@ -246,6 +242,10 @@
             &--all-options-selected {
                 display: block;
             }
+        }
+
+        &--all-options-selected {
+            display: none;
         }
 
         &-mark {

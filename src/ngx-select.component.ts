@@ -349,13 +349,11 @@ export class NxgSelectComponent implements OnInit {
       this.isDirty = true;
       this.inputValue = '';
 
-      if (!this.isMultiple) {
-        this.close();
-      }
-
       setTimeout(() => {
         this.updateModel();
         this.updateAvailableOptions();
+
+        this.close();
       }, 1);
     }
   }
