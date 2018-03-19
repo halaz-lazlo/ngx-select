@@ -393,7 +393,7 @@ export class NxgSelectComponent implements OnInit {
       filteredOptions.forEach(option => {
         const isOptionSelected = this.isOptionSelected(option);
 
-        if (!isOptionSelected) {
+        if (!this.isMultiple || !isOptionSelected) {
           isAllOptionSelected = false;
           availableOptions.push(new AvailableOption(isOptionSelected, option))
         }
