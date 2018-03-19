@@ -187,6 +187,8 @@ export class NxgSelectComponent implements OnInit {
   open() {
     this.isOpen = true;
 
+    console.log('shiiit');
+
     if (this.highlightedOptionIndex < 0) {
       this.highlightedOptionIndex = 0;
     }
@@ -417,26 +419,28 @@ export class NxgSelectComponent implements OnInit {
   private isOptionSelected(option): boolean {
     let isOptionSelected = false;
 
-    if (this.isMultiple) {
-      const isSelected = this.selectedOptions.find(selectedOption => {
-        let equals = selectedOption[this.labelField] === option[this.labelField];
+    if (this.selectedOption) {
+      if (this.isMultiple) {
+        const isSelected = this.selectedOptions.find(selectedOption => {
+          let equals = selectedOption[this.labelField] === option[this.labelField];
+
+          if (!this.allowAdd) {
+            equals = equals && selectedOption[this.valueField] === option[this.valueField];
+          }
+
+          return equals;
+        });
+
+        isOptionSelected = !!isSelected;
+      } else {
+        let equals = this.selectedOption[this.labelField] === option[this.labelField];
 
         if (!this.allowAdd) {
-          equals = equals && selectedOption[this.valueField] === option[this.valueField];
+          equals = equals && this.selectedOption[this.valueField] === option[this.valueField];
         }
 
-        return equals;
-      });
-
-      isOptionSelected = !!isSelected;
-    } else {
-      let equals = this.selectedOption[this.labelField] === option[this.labelField];
-
-      if (!this.allowAdd) {
-        equals = equals && this.selectedOption[this.valueField] === option[this.valueField];
+        isOptionSelected = equals;
       }
-
-      isOptionSelected = equals;
     }
 
     return isOptionSelected;
