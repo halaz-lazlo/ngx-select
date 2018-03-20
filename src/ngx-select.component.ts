@@ -460,7 +460,7 @@ export class NxgSelectComponent implements OnInit {
   }
 
   private updateAvailableOptionsWithoutId() {
-    if (this.selectedOptions.length) {
+    if (this.selectedOptions && this.selectedOptions.length) {
       this.selectedOptions.forEach((selectedOption, i) => {
         // option has no value, must search, maybe options has item with async load
         if (!selectedOption[this.valueField]) {
