@@ -352,7 +352,11 @@ export class NxgSelectComponent implements OnInit {
         this.updateModel();
         this.updateAvailableOptions();
 
-        this.close();
+        console.log(`b${this.inputValue}a`, this.isMobile, this.isAllOptionSelected);
+
+        if (!this.isMultiple) {
+          this.close();
+        }
       }, 1);
     }
   }
@@ -416,8 +420,8 @@ export class NxgSelectComponent implements OnInit {
   private isOptionSelected(option): boolean {
     let isOptionSelected = false;
 
-    if (this.selectedOption) {
-      if (this.isMultiple) {
+    if (this.isMultiple) {
+      if (this.selectedOptions) {
         const isSelected = this.selectedOptions.find(selectedOption => {
           let equals = selectedOption[this.labelField] === option[this.labelField];
 
@@ -429,7 +433,9 @@ export class NxgSelectComponent implements OnInit {
         });
 
         isOptionSelected = !!isSelected;
-      } else {
+      }
+    } else {
+      if (this.selectedOption) {
         let equals = this.selectedOption[this.labelField] === option[this.labelField];
 
         if (!this.allowAdd) {

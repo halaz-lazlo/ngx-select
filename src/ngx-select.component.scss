@@ -243,14 +243,14 @@
             &--add-new {
                 background: #ddd;
             }
-
-            &--all-options-selected {
-                display: block;
-            }
         }
 
         &--all-options-selected {
             display: none;
+
+            @include respond-to('md') {
+                display: block;
+            }
         }
 
         &-mark {
