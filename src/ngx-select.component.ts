@@ -352,8 +352,6 @@ export class NxgSelectComponent implements OnInit {
         this.updateModel();
         this.updateAvailableOptions();
 
-        console.log(`b${this.inputValue}a`, this.isMobile, this.isAllOptionSelected);
-
         if (!this.isMultiple) {
           this.close();
         }
