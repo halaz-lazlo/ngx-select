@@ -24,10 +24,10 @@ export class NxgSelectComponent implements OnInit {
       this.updateAvailableOptions();
       this.updateAvailableOptionsWithoutId();
     }
-  };
+  }
   get options(): object[] {
     return this._options;
-  };
+  }
 
   private _model: any;
   @Input()
@@ -44,21 +44,21 @@ export class NxgSelectComponent implements OnInit {
   @Output() modelChange: EventEmitter<any> = new EventEmitter();
 
   // select input related
-  @Input() labelField?: string = 'label';
-  @Input() valueField?: string = 'value';
+  @Input() labelField? = 'label';
+  @Input() valueField? = 'value';
   @Input() placeholder?: string;
   @Input() isObjectValue?: boolean;
   @Input() isMultiple?: boolean;
   @Input() allowAdd?: boolean;
   @Input() maxItems?: number;
   @Input() isLoading?: boolean;
-  @Input() dropdownDirection?: string = 'down';
+  @Input() dropdownDirection? = 'down';
 
   // messages
-  @Input() noOptionAvailableMsg?: string = 'No options available, try searching...';
-  @Input() noFilterResultsMsg?: string = 'No results';
-  @Input() allOptionSelectedMsg?: string = 'All options have been selected';
-  @Input() addOptionMsg?: string = 'Add {{input}}...';
+  @Input() noOptionAvailableMsg? = 'No options available, try searching...';
+  @Input() noFilterResultsMsg? = 'No results';
+  @Input() allOptionSelectedMsg? = 'All options have been selected';
+  @Input() addOptionMsg? = 'Add {{input}}...';
   public addOptionMessage: string;
 
   // input
@@ -398,7 +398,7 @@ export class NxgSelectComponent implements OnInit {
 
         if (!this.isMultiple || !isOptionSelected) {
           isAllOptionSelected = false;
-          availableOptions.push(new AvailableOption(isOptionSelected, option))
+          availableOptions.push(new AvailableOption(isOptionSelected, option));
         }
 
         availableOptionsMobile.push(new AvailableOption(isOptionSelected, option));
