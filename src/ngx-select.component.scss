@@ -359,10 +359,8 @@
 
 .body {
     &--ngx-selext-open {
-        overflow-y: hidden;
-
-        @include respond-to('md') {
-            overflow-y: auto;
+        @media (max-width: 768px) {
+            overflow-y: hidden;
         }
     }
 }
