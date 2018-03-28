@@ -249,8 +249,6 @@ export class NxgSelectComponent implements OnInit {
   }
 
   highlightNextOption() {
-    this.open();
-
     if (this.availableOptions && this.availableOptions.length > 0) {
       if (this.highlightedOptionIndex >= this.availableOptions.length - 1) {
         this.highlightedOptionIndex = 0;
@@ -258,6 +256,8 @@ export class NxgSelectComponent implements OnInit {
         this.highlightedOptionIndex += 1;
       }
     }
+
+    this.open();
   }
 
   highlightOption(i) {
@@ -368,17 +368,16 @@ export class NxgSelectComponent implements OnInit {
     if (this._options && this.options.length) {
       // add user added options
       const options = this._options.map(x => Object.assign({}, x));
-        if (this.isMultiple && this.selectedOptions) {
-          // add options to filtered options
-          this.selectedOptions.forEach(selectedOption => {
-            const index = options.findIndex(option => {
-              return option[this.labelField] === selectedOption[this.labelField];
-            });
-
-            if (index < 0) {
-              options.unshift(selectedOption);
-            }
+      if (this.isMultiple && this.selectedOptions) {
+        this.selectedOptions.forEach(selectedOption => {
+          const index = options.findIndex(option => {
+            return option[this.labelField] === selectedOption[this.labelField];
           });
+
+          if (index < 0) {
+            options.unshift(selectedOption);
+          }
+        });
       }
 
       // filter options
@@ -421,7 +420,7 @@ export class NxgSelectComponent implements OnInit {
     if (this.isMultiple) {
       if (this.selectedOptions) {
         const isSelected = this.selectedOptions.find(selectedOption => {
-          let equals = selectedOption[this.labelField] === option[this.labelField];
+          let equals = selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase();
 
           if (!this.allowAdd) {
             equals = equals && selectedOption[this.valueField] === option[this.valueField];
