@@ -1,11 +1,8 @@
 {
   "name": "@halaz.lazlo/ngx-select",
-  "version": "1.0.46",
+  "version": "1.1.2",
   "description": "Angular select component",
-  "typings": "dist/index.d.ts",
-  "scripts": {
-    "prepublish": "tsc"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/halaz-lazlo/ngx-select.git"
@@ -22,8 +19,5 @@
     "url": "https://github.com/halaz-lazlo/ngx-select/issues"
   },
   "homepage": "https://github.com/halaz-lazlo/ngx-select#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "typescript": "^2.8.1"
-  }
+  "dependencies": {}
 }

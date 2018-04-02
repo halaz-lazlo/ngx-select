@@ -1,4 +1,4 @@
-@import 'scss/helpers/all';
+@import './scss/helpers/all';
 
 .ngx-select {
     position: relative;
@@ -13,8 +13,10 @@
 
     &__control {
         position: relative;
-        display: block;
-        padding: 0 70px 5px 10px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0 70px 0 10px;
         min-height: 40px;
         border: #aaa solid 1px;
         border-radius: 3px;
@@ -59,7 +61,7 @@
 
     &__input {
         display: none;
-        margin-top: 5px;
+        margin: 5px 0;
         min-width: 10px;
         min-height: 26px;
         width: 0;
@@ -90,12 +92,10 @@
 
     &__label {
         position: relative;
-        display: inline-block;
-        margin: 5px 5px 0 0;
+        margin: 5px 2.5px;
         padding: 4px;
         padding-left: 7px;
         background: #eee;
-        vertical-align: middle;
         font-size: 12px;
 
         @include respond-to('md') {

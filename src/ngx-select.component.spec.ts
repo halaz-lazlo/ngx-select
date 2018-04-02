@@ -537,4 +537,29 @@ describe('select', () => {
       }, 100);
     });
   });
+
+  describe('mobile', () => {
+    beforeEach(() => {
+      select.options = options;
+    });
+
+    it('should added options be in the availableOptions', done => {
+      select.modelChange.subscribe(val => {
+        const added = select.availableOptionsMobile[0];
+        expect(added.isSelected).toBeTruthy();
+        expect(added.data[select.labelField]).toBe('new-value');
+
+        done();
+      });
+
+
+      select.isMultiple = true;
+      select.isObjectValue = true;
+      select.allowAdd = true;
+      select.ngOnInit();
+      select.inputValue = 'new-value';
+
+      select.createOption();
+    });
+  })
 });

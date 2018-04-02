@@ -56,62 +56,83 @@
   </div>
 
   <div class="ngx-select__dropdown">
-    <div class="ngx-select__options" [style.maxHeight.px]="dropdownOptionsHeight">
-      <div *ngIf="isMobile">
-        <div
-          *ngFor="let option of availableOptionsMobile; let i = index"
-          class="ngx-select__option"
-          [ngClass]="{'ngx-select__option--selected': option.isSelected}"
-          (click)="option.isSelected ? removeFilteredOption(option.data) : selectOption(option.data)">
-          {{option.data[labelField]}}
+    <div #dropdownDOM class="ngx-select__dropdown-body">
+      <div class="ngx-select__dropdown-container">
+        <!-- filter input -->
+        <input
+          #dropdownInputDOM
+          class="ngx-select__dropdown-input"
+          type="text"
+          placeholder="Search"
+          [(ngModel)]="inputValue"
+          (ngModelChange)="onInputChange($event)">
+
+      <div class="ngx-select__options" [style.maxHeight.px]="dropdownOptionsHeight">
+        <div *ngIf="isMobile">
           <div
-            class="ngx-select__option-mark"
-            [ngClass]="{'ngx-select__option-mark--selected': option.isSelected}"></div>
+            *ngFor="let option of availableOptionsMobile; let i = index"
+            class="ngx-select__option"
+            [ngClass]="{'ngx-select__option--selected': option.isSelected}"
+            (click)="option.isSelected ? removeSelectedOption(option.data) : selectOption(option.data)">
+            {{option.data[labelField]}}
+            <div
+              class="ngx-select__option-mark"
+              [ngClass]="{'ngx-select__option-mark--selected': option.isSelected}"></div>
+          </div>
+        </div>
+
+        <div *ngIf="!isMobile">
+          <div
+            *ngFor="let option of availableOptions; let i = index"
+            class="ngx-select__option"
+            [ngClass]="{
+              'ngx-select__option--selected': option.isSelected,
+              'ngx-select__option--highlighted': highlightedOptionIndex === i
+            }"
+            (click)="selectOption(option.data)"
+            (mouseenter)="highlightOption(i)">
+            {{option.data[labelField]}}
+            <div
+              class="ngx-select__option-mark"
+              [ngClass]="{'ngx-select__option-mark--selected': option.isSelected}"></div>
+          </div>
+        </div>
+
+        <!-- no option available msg -->
+        <div *ngIf="!isOptionAvailable"
+          class="ngx-select__option ngx-select__option--no-option-available">
+          {{noOptionAvailableMsg}}
+        </div>
+
+        <!-- no results available -->
+        <div *ngIf="isNoFilterResults"
+          class="ngx-select__option ngx-select__option--no-result">
+          {{noFilterResultsMsg}}
+        </div>
+
+        <!-- add new option -->
+        <div
+          *ngIf="isAddBtnVisible"
+          class="ngx-select__option ngx-select__option--add-new"
+          (click)="createOption()">
+          {{addOptionMessage}}
+        </div>
+
+        <!-- all options selected msg -->
+        <div
+          *ngIf="!isMobile && isAllOptionSelected"
+          class="ngx-select__option ngx-select__option--all-options-selected">
+          {{allOptionSelectedMsg}}
         </div>
       </div>
 
-      <div *ngIf="!isMobile">
-        <div
-          *ngFor="let option of availableOptions; let i = index"
-          class="ngx-select__option"
-          [ngClass]="{
-            'ngx-select__option--selected': option.isSelected,
-            'ngx-select__option--highlighted': highlightedOptionIndex === i
-          }"
-          (click)="selectOption(option.data)"
-          (mouseenter)="highlightOption(i)">
-          {{option.data[labelField]}}
-          <div
-            class="ngx-select__option-mark"
-            [ngClass]="{'ngx-select__option-mark--selected': option.isSelected}"></div>
-        </div>
-      </div>
-
-      <!-- no option available msg -->
-      <div *ngIf="!isOptionAvailable"
-        class="ngx-select__option ngx-select__option--no-option-available">
-        {{noOptionAvailableMsg}}
-      </div>
-
-      <!-- no results available -->
-      <div *ngIf="isNoFilterResults"
-        class="ngx-select__option ngx-select__option--no-result">
-        {{noFilterResultsMsg}}
-      </div>
-
-      <!-- add new option -->
-      <div
-        *ngIf="isAddBtnVisible"
-        class="ngx-select__option ngx-select__option--add-new"
-        (click)="createOption()">
-        {{addOptionMessage}}
-      </div>
-
-      <!-- all options selected msg -->
-      <div
-        *ngIf="!isMobile && isAllOptionSelected"
-        class="ngx-select__option ngx-select__option--all-options-selected">
-        {{allOptionSelectedMsg}}
+      <!-- btns -->
+      <div #dropdownBtnsDOM class="ngx-select__dropdown-btns">
+        <button
+          class="ngx-select__dropdown-btn"
+          (click)="close()">
+          Ok
+        </button>
       </div>
     </div>
   </div>

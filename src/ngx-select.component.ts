@@ -328,8 +328,14 @@ export class NgxSelectComponent implements OnInit {
   removeOptionByIndex(i: number) {
     this.selectedOptions.splice(i, 1);
 
-    this.updateAvailableOptions();
-    this.updateModel();
+    setTimeout(() => {
+      if (!this.isMultiple) {
+        this.close();
+      }
+
+      this.updateAvailableOptions();
+      this.updateModel();
+    }, 1);
   }
 
   removeLastOption() {
@@ -343,6 +349,14 @@ export class NgxSelectComponent implements OnInit {
 
     this.updateAvailableOptions();
     this.updateModel();
+  }
+
+  removeSelectedOption(option) {
+    this.selectedOptions.forEach((o, i) => {
+      if (o[this.labelField] === option[this.labelField]) {
+        this.removeOption(i);
+      }
+    });
   }
 
   // key actions
@@ -381,6 +395,16 @@ export class NgxSelectComponent implements OnInit {
       // copy _options
       const options = this._options.map(x => Object.assign({}, x));
 
+      // add selected options
+      if (this.selectedOptions && this.selectedOptions.length) {
+        this.selectedOptions.forEach(selectedOption => {
+          if (!this.isOptionInOptions(selectedOption)) {
+            options.unshift(selectedOption);
+          }
+        });
+      }
+
+      // filter
       let filteredOptions = options;
       if (this.inputValue) {
         filteredOptions = options.filter(option => {
@@ -394,13 +418,14 @@ export class NgxSelectComponent implements OnInit {
         });
       }
 
+      // is in selected
       filteredOptions.forEach(option => {
         const isOptionSelected = this.isOptionSelected(option);
         if (!isOptionSelected) {
-          availableOptions.push(new AvailableOption(false, option));
+          availableOptions.push(new AvailableOption(isOptionSelected, option));
         }
 
-        availableOptionsMobile.push(new AvailableOption(false, option));
+        availableOptionsMobile.push(new AvailableOption(isOptionSelected, option));
       });
 
       // messages
@@ -533,6 +558,18 @@ export class NgxSelectComponent implements OnInit {
 
 
     return isOptionSelected;
+  }
+
+  private isOptionInOptions(option): boolean {
+    if (!option[this.valueField]) {
+      return false;
+    }
+
+    const isOptionInOptions = this._options.find(o => {
+      return o[this.valueField] === option[this.valueField];
+    });
+
+    return !!isOptionInOptions;
   }
 
   private findOptionByValue(value) {
