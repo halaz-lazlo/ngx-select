@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { NxgSelectComponent } from './ngx-select.component';
+import { NgxSelectComponent } from './ngx-select.component';
 
 @NgModule({
   imports: [
@@ -10,10 +10,10 @@ import { NxgSelectComponent } from './ngx-select.component';
     FormsModule
   ],
   exports: [
-    NxgSelectComponent
+    NgxSelectComponent
   ],
   declarations: [
-    NxgSelectComponent
+    NgxSelectComponent
   ]
 })
 export class NgxSelectModule { }

@@ -1,11 +1,8 @@
 {
   "name": "@halaz.lazlo/ngx-select",
-  "version": "1.0.46",
+  "version": "1.1.2",
   "description": "Angular select component",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/halaz-lazlo/ngx-select.git"
