@@ -20,14 +20,19 @@ import { NgxSelectModule } from '@halaz.lazlo/ngx-select';
 imports: [..., NgxSelectModule, ...]
 ```
 
-2. Use default style (.angular-cli.json)
+3. Use default style (.angular-cli.json)
 ```
 "styles": [
   "../node_modules/@halaz.lazlo/ngx-select/src/ngx-select.component.scss"
 ]
 ```
 
-4. Use
+4. OR Import scss (src/scss/main.scss)
+```
+@import 'node_modules/@halaz.lazlo/ngx-select/src/ngx-select.component';
+```
+
+5. Use
 ```
 <ngx-select [options]="..." [(model)]="..."></ngx-select>
 ```
