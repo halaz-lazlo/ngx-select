@@ -6,6 +6,8 @@ Select module for angular 2-4
 
 [DEMO SOURCE](https://github.com/halaz-lazlo/ngx-select-demo)
 
+[MORE IN TESTS](https://github.com/halaz-lazlo/ngx-select/blob/master/src/ngx-select.component.spec.ts)
+
 ## Usage in an existing angular cli project
 1. Install via npm
 ```
