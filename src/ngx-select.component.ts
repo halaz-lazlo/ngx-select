@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 
-class AvailableOption {
+export class AvailableOption {
   constructor(
     public isSelected: boolean,
     public data: any

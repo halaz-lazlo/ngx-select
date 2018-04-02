@@ -105,7 +105,7 @@ describe('select', () => {
 
       expect(select.availableOptions.length).toBe(2);
       expect(select.availableOptions[0].data[select.valueField]).toMatch(options[1][select.valueField]);
-    })
+    });
   });
 
   describe('filtering', () => {
