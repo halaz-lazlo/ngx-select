@@ -10,15 +10,18 @@ describe('select', () => {
     options = [
       {
         id: 'fake-id-1',
-        name: 'fake-name-1'
+        name: 'fake-name-1',
+        otherField: 'other-field-value'
       },
       {
         id: 'fake-id-2',
-        name: 'fake-name-2'
+        name: 'fake-name-2',
+        otherField: 'other-field-value-2'
       },
       {
         id: 'fake-id-3',
-        name: 'fake-name-3'
+        name: 'fake-name-3',
+        otherField: 'other-field-value-3'
       }
     ];
 
@@ -243,156 +246,279 @@ describe('select', () => {
   });
 
   describe('selecting', () => {
-    let labelField: string;
-    let valueField: string;
-
     beforeEach(() => {
       select.options = options;
       select.ngOnInit();
     });
 
-    it('!isMultiple + !isObjectValue => selectedOption[valueField]', done => {
-      select.modelChange.subscribe(val => {
-        expect(val).toBe(select.options[0][select.valueField]);
-        done();
-      });
-
-      select.selectOption(select.options[0]);
-    });
-
-    it('!isMultiple + isObjectValue => selectedOption', done => {
-      select.isObjectValue = true;
-
-      select.modelChange.subscribe(val => {
-        expect(val).toBe(select.options[0]);
-        done();
-      });
-
-      select.selectOption(select.options[0]);
-    });
-
-    it('isMultiple + !isObjectValue => [selectedOption[valueField]]', done => {
-      select.isMultiple = true;
-
-      select.modelChange.subscribe(val => {
-        expect(val.length).toBe(1);
-        expect(val[0]).toBe(select.options[0][select.valueField]);
-
-        done();
-      });
-
-      select.selectOption(select.options[0]);
-    });
-
-    it('isMultiple + isObjectValue => [selectedOption]', done => {
-      select.isMultiple = true;
-      select.isObjectValue = true;
-
-      select.modelChange.subscribe(val => {
-        expect(val.length).toBe(1);
-        expect(val[0]).toBe(select.options[0]);
-
-        done();
-      });
-
-      select.selectOption(select.options[0]);
-    });
-
-    it('should not have more than maxItems', () => {
-      select.isMultiple = true;
-      select.maxItems = 2;
-
-      select.selectOption(select.options[0]);
-      select.selectOption(select.options[1]);
-      select.selectOption(select.options[2]);
-
-      expect(select.selectedOptions.length).toBe(select.maxItems);
-    });
-
-    it('should close when !isMultiple', done => {
-      select.modelChange.subscribe(val => {
-        expect(select.isOpen).toBeFalsy();
-        done();
-      });
-
-      select.focus();
-      select.selectOption(select.options[0]);
-    });
-
-    it('should not close when isMultiple', done => {
-      select.isMultiple = true;
-
-      select.modelChange.subscribe(val => {
-        expect(select.isOpen).toBeTruthy();
-        done();
-      });
-
-      select.focus();
-      select.selectOption(select.options[0]);
-    });
-
-    it('should not be in availableOptions when isMultiple and selected', done => {
-      select.isMultiple = true;
-
-      select.modelChange.subscribe(val => {
-        const selectedOption = select.availableOptions.find(elem => {
-          return elem.data[select.valueField] === select.options[0][select.valueField];
+    describe('!isMultiple', () => {
+      it('!isObjectValue => selectedOption[valueField]', done => {
+        select.modelChange.subscribe(val => {
+          expect(val).toBe(select.options[0][select.valueField]);
+          done();
         });
 
-        expect(selectedOption).toBeUndefined();
-
-        done();
+        select.selectOption(select.options[0]);
       });
 
-      select.focus();
-      select.selectOption(select.options[0]);
-    });
+      it('isObjectValue => selectedOption', done => {
+        select.modelChange.subscribe(val => {
+          expect(val).toBe(select.options[0]);
+          done();
+        });
 
-    it('should be able add option', done => {
-      select.modelChange.subscribe(value => {
-        expect(value[select.labelField]).toBe('new Value');
-        expect(select.selectedOptions.length).toBe(1);
-
-        done();
+        select.isObjectValue = true;
+        select.selectOption(select.options[0]);
       });
 
-      select.allowAdd = true;
-      select.isObjectValue = true;
-      select.inputValue = 'new Value';
-      select.createOption();
-    });
+      it('should return the whole option object', done => {
+        select.modelChange.subscribe(val => {
+          expect(val.otherField).toBe(options[0].otherField);
+          done();
+        });
 
-    it('should select the highlighted indexed option on enter', done => {
-      select.modelChange.subscribe(value => {
-        expect(value).toBe(options[0][select.valueField]);
-
-        done();
+        select.isObjectValue = true;
+        select.selectOption(select.options[0]);
       });
 
-      select.highlightNextOption();
-      select.onEnter();
+      it('should close when selection', done => {
+        select.modelChange.subscribe(val => {
+          expect(select.isOpen).toBeFalsy();
+          done();
+        });
+
+        select.focus();
+        select.selectOption(select.options[0]);
+      });
+
+      it('should select the highlighted indexed option on enter', done => {
+        select.modelChange.subscribe(value => {
+          expect(value).toBe(options[0][select.valueField]);
+
+          done();
+        });
+
+        select.highlightNextOption();
+        select.onEnter();
+      });
+
+      describe('allowAdd', () => {
+        it('should be able add option', done => {
+          select.modelChange.subscribe(value => {
+            expect(select.selectedOptions.length).toBe(1);
+            expect(value[select.labelField]).toBe('new Value');
+
+            done();
+          });
+
+          select.isObjectValue = true;
+          select.inputValue = 'new Value';
+          select.createOption();
+        });
+      });
     });
 
-    it('should update added selected item\'s valueFields on async option', done => {
+    describe('isMultiple', () => {
+      beforeEach(() => {
+        select.isMultiple = true;
+      });
+
+      it('isMultiple + !isObjectValue => [selectedOption[valueField]]', done => {
+        select.modelChange.subscribe(val => {
+          expect(val.length).toBe(1);
+          expect(val[0]).toBe(select.options[0][select.valueField]);
+
+          done();
+        });
+
+        select.selectOption(select.options[0]);
+      });
+
+      it('isMultiple + isObjectValue => [selectedOption]', done => {
+        select.modelChange.subscribe(val => {
+          expect(val.length).toBe(1);
+          expect(val[0]).toBe(select.options[0]);
+
+          done();
+        });
+
+        select.isObjectValue = true;
+        select.selectOption(select.options[0]);
+      });
+
+      it('should not have more than maxItems', done => {
+        select.isMultiple = true;
+        select.maxItems = 2;
+
+        select.selectOption(select.options[0]);
+        select.selectOption(select.options[1]);
+        select.selectOption(select.options[2]);
+
+        setTimeout(() => {
+          expect(select.selectedOptions.length).toBe(select.maxItems);
+          done();
+        }, 100);
+      });
+
+      it('should not close', done => {
+        select.modelChange.subscribe(val => {
+          expect(select.isOpen).toBeTruthy();
+          done();
+        });
+
+        select.focus();
+        select.selectOption(select.options[0]);
+      });
+
+      it('should not be in availableOptions when isMultiple and selected', done => {
+        select.modelChange.subscribe(val => {
+          const selectedOption = select.availableOptions.find(elem => {
+            return elem.data[select.valueField] === select.options[0][select.valueField];
+          });
+
+          expect(selectedOption).toBeUndefined();
+
+          done();
+        });
+
+        select.focus();
+        select.selectOption(select.options[0]);
+      });
+
+      it('should add the highlighted indexed option on enter', done => {
+        select.modelChange.subscribe(value => {
+          expect(value[0]).toBe(options[0][select.valueField]);
+
+          done();
+        });
+
+        select.highlightNextOption();
+        select.onEnter();
+      });
+
+      describe('allowAdd', () => {
+        beforeEach(() => {
+          select.allowAdd = true;
+        });
+
+        it('should not allow to set !isObjectValue', () => {
+          expect(() => select.ngOnInit()).toThrow(new Error('This is a dangerous config, dont use'));
+        });
+
+        describe('isObjectValue', () => {
+          beforeEach(() => {
+            select.isObjectValue = true;
+          });
+
+          it('should be able add option', done => {
+            select.modelChange.subscribe(value => {
+              const added = value[0];
+              expect(select.selectedOptions.length).toBe(1);
+              expect(added[select.labelField]).toBe('new Value');
+
+              done();
+            });
+
+            select.inputValue = 'new Value';
+            select.createOption();
+          });
+
+          it('should update added selected item\'s valueFields on async option', done => {
+            select.modelChange.subscribe(val => {
+              const option = val[0];
+              expect(option[select.labelField]).toBe('Valami');
+              expect(option[select.valueField]).toBe('asnyc-id');
+
+              done();
+            });
+
+            select.model = [{id: null, name: 'valami'}];
+            select.options = [{ id: 'asnyc-id', name: 'Valami' }];
+          });
+
+          it('should not select if its already selected', done => {
+            select.model = [{ id: 'fake-id-1', name: 'Fake-name-1'}];
+
+            select.inputValue = 'fake-name-1';
+            select.createOption();
+
+            setTimeout(() => {
+              expect(select.selectedOptions.length).toBe(1);
+              expect(select.selectedOptions[0][select.labelField]).toBe('Fake-name-1');
+              done();
+            }, 100);
+          });
+
+          it('should not let allow add elem which is already in selectedOptions', done => {
+            select.isMultiple = true;
+            select.allowAdd = true;
+            select.isObjectValue = true;
+
+            select.model = [{ id: 'fake-id-1', name: 'Fake-name-1'}];
+
+            select.inputValue = 'fake-name-1';
+            select.onInputChange(select.inputValue);
+
+            setTimeout(() => {
+              expect(select.isAddBtnVisible).toBeFalsy();
+              expect(select.isNoFilterResults).toBeTruthy();
+              done();
+            }, 100);
+          });
+        });
+      });
+    });
+  });
+
+  describe('removing', () => {
+    beforeEach(() => {
+      select.options = options;
+    });
+
+    it('should be open', done => {
+      done();
+    });
+
+    it('backspace + !isMultiple: should null the model', done => {
       select.modelChange.subscribe(val => {
-        const option = val[0];
-        expect(option[select.labelField]).toBe('Valami');
-        expect(option[select.valueField]).toBe('asnyc-id');
+        expect(val).toBeNull();
 
         done();
       });
 
-      select.isObjectValue = true;
-      select.isMultiple = true;
-      select.model = [{id: null, name: 'valami'}];
-      select.options = [{ id: 'asnyc-id', name: 'Valami' }];
+      select.model = 'fake-id-1';
+      select.ngOnInit();
+
+      select.onBackspace();
     });
 
-    it('backspace + !isMultiple: should null the model');
+    it('backspace + isMultiple: should null the model if length === 1', done => {
+      select.modelChange.subscribe(val => {
+        expect(val.length).toBe(1);
 
-    it('backspace + isMultiple: should null the model if length === 1');
+        done();
+      });
 
-    it('backspace + isMultiple: should delete the last item');
+      select.isMultiple = true;
+      select.model = ['fake-id-1', 'fake-id-2'];
+      select.ngOnInit();
+
+      select.onBackspace();
+    });
+
+    it('backspace + isMultiple: should delete the last item', done => {
+      select.isMultiple = true;
+      select.model = ['fake-id-1', 'fake-id-2'];
+      select.ngOnInit();
+
+      select.onBackspace();
+      select.onBackspace();
+
+      setTimeout(() => {
+        expect(select.model).toBeNull();
+        done();
+      }, 100);
+    });
   });
 
   describe('messages', () => {

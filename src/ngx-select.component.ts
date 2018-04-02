@@ -281,25 +281,26 @@ export class NgxSelectComponent implements OnInit {
   }
 
   selectOption(option) {
-    // if (!this.isOptionSelected(option)) {
-    if (!this.isMultiple) {
-      this.selectedOptions = [];
-    }
-
-    if (!this.maxItems || this.selectedOptions.length < this.maxItems) {
-      this.selectedOptions.push(option);
-    }
-
-    this.inputValue = '';
-
-    setTimeout(() => {
+    if (!this.isOptionSelected(option)) {
       if (!this.isMultiple) {
-        this.close();
+        this.selectedOptions = [];
       }
 
-      this.updateAvailableOptions();
-      this.updateModel();
-    }, 1);
+      if (!this.maxItems || this.selectedOptions.length < this.maxItems) {
+        this.selectedOptions.push(option);
+      }
+
+      this.inputValue = '';
+
+      setTimeout(() => {
+        if (!this.isMultiple) {
+          this.close();
+        }
+
+        this.updateAvailableOptions();
+        this.updateModel();
+      }, 1);
+    }
   }
 
   createOption() {
@@ -411,7 +412,14 @@ export class NgxSelectComponent implements OnInit {
       if (availableOptions.length === 0) {
         if (this.inputValue && this.inputValue !== '') {
           if (this.allowAdd) {
-            this.isAddBtnVisible = true;
+            const optionToCreate = this.createPreloadedSelectedOption(this.inputValue);
+            const isSelected = this.isOptionSelected(optionToCreate);
+
+            if (isSelected) {
+              this.isNoFilterResults = true;
+            } else {
+              this.isAddBtnVisible = true;
+            }
           } else {
             this.isNoFilterResults = true;
           }
@@ -531,6 +539,20 @@ export class NgxSelectComponent implements OnInit {
     if (this._options) {
       const ind = this._options.findIndex(option => {
         return option[this.valueField] === value;
+      });
+
+      if (ind >= 0) {
+        return this._options[ind];
+      }
+    }
+
+    return null;
+  }
+
+  private findOptionByLabel(label) {
+    if (this._options) {
+      const ind = this._options.findIndex(option => {
+        return option[this.labelField] === label;
       });
 
       if (ind >= 0) {
