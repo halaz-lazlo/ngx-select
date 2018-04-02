@@ -373,7 +373,20 @@ describe('select', () => {
       select.onEnter();
     });
 
-    it('should update added selected item\'s valueFields on async option', () => {});
+    it('should update added selected item\'s valueFields on async option', done => {
+      select.modelChange.subscribe(val => {
+        const option = val[0];
+        expect(option[select.labelField]).toBe('Valami');
+        expect(option[select.valueField]).toBe('asnyc-id');
+
+        done();
+      });
+
+      select.isObjectValue = true;
+      select.isMultiple = true;
+      select.model = [{id: null, name: 'valami'}];
+      select.options = [{ id: 'asnyc-id', name: 'Valami' }];
+    });
 
     it('backspace + !isMultiple: should null the model');
 

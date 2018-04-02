@@ -21,6 +21,7 @@ export class NgxSelectComponent implements OnInit {
 
     if (!this.isFirstInit) {
       this.updateAvailableOptions();
+      this.updateSelectedOptionsWithoutId();
     }
   }
   get options(): object[] {
@@ -429,6 +430,25 @@ export class NgxSelectComponent implements OnInit {
     this.availableOptions = availableOptions;
 
     this.availableOptionsMobile = availableOptionsMobile;
+  }
+
+  private updateSelectedOptionsWithoutId() {
+    if (this.selectedOptions && this.selectedOptions.length) {
+      this.selectedOptions.forEach((selectedOption, i) => {
+        // option has no value, must search, maybe options has item with async load
+        if (!selectedOption[this.valueField]) {
+          this._options.forEach(option => {
+            // we have a match
+            if (selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
+              this.selectedOptions[i] = option;
+            }
+          });
+        }
+      });
+
+      this.updateAvailableOptions();
+      this.updateModel();
+    }
   }
 
   private updateModel() {
