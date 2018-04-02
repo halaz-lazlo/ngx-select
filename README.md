@@ -14,21 +14,27 @@ Select module for angular 2-4
 npm install @halaz.lazlo/ngx-select --save
 ```
 
-2. Import module (src/app/app.module.ts)
+2. Import module
 ```
+// src/app/app.module.ts
+
 import { NgxSelectModule } from '@halaz.lazlo/ngx-select';
 imports: [..., NgxSelectModule, ...]
 ```
 
-3. Use default style (.angular-cli.json)
+3. Use default style
 ```
+// .angular-cli.json
+
 "styles": [
   "../node_modules/@halaz.lazlo/ngx-select/src/ngx-select.component.scss"
 ]
 ```
 
-4. OR Import scss (src/scss/main.scss)
+4. OR Import scss
 ```
+// src/scss/main.scss
+
 @import 'node_modules/@halaz.lazlo/ngx-select/src/ngx-select.component';
 ```
 
