@@ -66,14 +66,14 @@ describe('select', () => {
     it('should open when no options available', () => {
       select.highlightNextOption();
 
-      expect(select.highlightedOptionIndex).toBe(-1);
+      expect(select.highlightedOptionIndex).toBe(0);
       expect(select.isOpen).toBeTruthy();
 
       select.options = options;
       select.ngOnInit();
 
       select.highlightNextOption();
-      expect(select.highlightedOptionIndex).toBe(0);
+      expect(select.highlightedOptionIndex).toBe(1);
     });
 
     it('should open on jumping to prev available option (keyup)', () => {
@@ -226,6 +226,10 @@ describe('select', () => {
 
       expect(select.selectedOptions[1][select.valueField]).toBe('fake-id-3');
       expect(select.selectedOptions[1][select.labelField]).toBe('fake-name-3');
+    });
+
+    it('should null model, when it updates as null', () => {
+
     });
 
     describe('allowAdd elements', () => {

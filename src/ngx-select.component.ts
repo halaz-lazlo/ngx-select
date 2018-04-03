@@ -146,9 +146,9 @@ export class NgxSelectComponent implements OnInit {
   open() {
     this.isOpen = true;
 
-    /* if (this.highlightedOptionIndex < 0) {
+    if (this.highlightedOptionIndex < 0) {
       this.highlightedOptionIndex = 0;
-    } */
+    }
 
     setTimeout(() => {
       this.calculateDropdownOptionsHeight();
@@ -268,7 +268,6 @@ export class NgxSelectComponent implements OnInit {
         }
       }
     }
-
 
     this.selectedOptions = selectedOptions;
   }
@@ -422,7 +421,7 @@ export class NgxSelectComponent implements OnInit {
       // is in selected
       filteredOptions.forEach(option => {
         const isOptionSelected = this.isOptionSelected(option);
-        if (!isOptionSelected) {
+        if (!this.isMultiple || !isOptionSelected) {
           availableOptions.push(new AvailableOption(isOptionSelected, option));
         }
 
