@@ -15,13 +15,16 @@ export class AvailableOption {
 export class NgxSelectComponent implements OnInit {
   // required
   private _options: object[];
+  private optionsRefreshTimeout: any;
   @Input()
   set options(options: object[]) {
     this._options = options;
 
     if (!this.isFirstInit) {
-      this.updateAvailableOptions();
-      this.updateSelectedOptionsWithoutId();
+      this.optionsRefreshTimeout = setTimeout(() => {
+        this.updateAvailableOptions();
+        this.updateSelectedOptionsWithoutId();
+      }, 10);
     }
   }
   get options(): object[] {
@@ -34,6 +37,10 @@ export class NgxSelectComponent implements OnInit {
     this._model = model;
 
     if (!this.isFirstInit) {
+      if (this.optionsRefreshTimeout) {
+        clearTimeout(this.optionsRefreshTimeout);
+      }
+
       this.preloadSelectedOptions();
     }
   }
@@ -454,7 +461,7 @@ export class NgxSelectComponent implements OnInit {
             }
           }
         } else {
-          if (this.selectedOptions.length === 0) {
+          if (!this.selectedOptions || this.selectedOptions.length === 0) {
             this.isOptionAvailable = false;
           } else {
             this.isAllOptionSelected = true;
@@ -485,6 +492,7 @@ export class NgxSelectComponent implements OnInit {
       });
 
       this.updateAvailableOptions();
+
       this.updateModel();
     }
   }

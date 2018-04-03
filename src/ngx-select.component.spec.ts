@@ -93,7 +93,7 @@ describe('select', () => {
       expect(select.availableOptionsMobile.length).toBe(options.length);
     });
 
-    it('should load async elements', () => {
+    it('should load async elements', done => {
       select.options = options;
 
       select.ngOnInit();
@@ -103,8 +103,12 @@ describe('select', () => {
         options[2]
       ];
 
-      expect(select.availableOptions.length).toBe(2);
-      expect(select.availableOptions[0].data[select.valueField]).toMatch(options[1][select.valueField]);
+      setTimeout(() => {
+        expect(select.availableOptions.length).toBe(2);
+        expect(select.availableOptions[0].data[select.valueField]).toMatch(options[1][select.valueField]);
+
+        done();
+      }, 100);
     });
   });
 
@@ -305,6 +309,8 @@ describe('select', () => {
         select.highlightNextOption();
         select.onEnter();
       });
+
+      it('should selected item be in availableOptions');
 
       describe('allowAdd', () => {
         it('should be able add option', done => {
