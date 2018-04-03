@@ -75,6 +75,7 @@ export class NgxSelectComponent implements OnInit {
   @Input() allOptionSelectedMsg? = 'All options have been selected';
 
   public isNoFilterResults: boolean;
+  public isNoFilterResultsMobile: boolean;
   @Input() noFilterResultsMsg? = 'No results';
 
   public isAddBtnVisible: boolean;
@@ -431,6 +432,7 @@ export class NgxSelectComponent implements OnInit {
       // messages
       this.isAddBtnVisible = false;
       this.isNoFilterResults = false;
+      this.isNoFilterResultsMobile = false;
       this.isAllOptionSelected = false;
       this.isOptionAvailable = true;
 
@@ -447,6 +449,10 @@ export class NgxSelectComponent implements OnInit {
             }
           } else {
             this.isNoFilterResults = true;
+
+            if (!availableOptionsMobile.length) {
+              this.isNoFilterResultsMobile = true;
+            }
           }
         } else {
           if (this.selectedOptions.length === 0) {

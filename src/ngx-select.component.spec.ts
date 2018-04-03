@@ -561,5 +561,53 @@ describe('select', () => {
 
       select.createOption();
     });
+
+    it('should show add new btn, when allowAdd and no filter result is available', () => {
+      select.inputValue = 'fake-name-random';
+      select.allowAdd = true;
+
+      select.onInputChange(select.inputValue);
+
+      expect(select.availableOptions.length).toBe(0);
+      expect(select.isAddBtnVisible).toBeTruthy();
+
+      expect(select.isNoFilterResults).toBeFalsy();
+    });
+
+    it('should not show "no filter result" message if there is a selected item', done => {
+      select.model = [options[0]];
+      select.isMultiple = true;
+      select.isObjectValue = true;
+
+      select.ngOnInit();
+
+      setTimeout(() => {
+        select.inputValue = 'fake-name-1';
+        select.onInputChange(select.inputValue);
+
+        expect(select.availableOptionsMobile.length).toBe(1);
+        expect(select.isNoFilterResultsMobile).toBeFalsy();
+
+        done();
+      }, 100);
+    });
+
+    it('should not show mobile "no filter result" message if there is no selected item', done => {
+      select.model = [options[0]];
+      select.isMultiple = true;
+      select.isObjectValue = true;
+
+      select.ngOnInit();
+
+      setTimeout(() => {
+        select.inputValue = 'fake-name-random';
+        select.onInputChange(select.inputValue);
+
+        expect(select.availableOptionsMobile.length).toBe(0);
+        expect(select.isNoFilterResultsMobile).toBeTruthy();
+
+        done();
+      }, 100);
+    });
   })
 });
