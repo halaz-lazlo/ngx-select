@@ -222,8 +222,7 @@
             padding: 2px 10px;
 
             &--selected,
-            &--highlighted,
-            &--add-new {
+            &--highlighted {
                 display: block;
                 cursor: pointer;
             }
@@ -236,8 +235,7 @@
                 }
             }
 
-            &--highlighted,
-            &--add-new {
+            &--highlighted {
                 background: #ddd;
             }
         }
@@ -301,6 +299,15 @@
                     }
                 }
             }
+        }
+    }
+
+    &__message {
+        font-size: 14px;
+        padding: 10px 15px;
+
+        @include respond-to('md') {
+            padding: 2px 10px;
         }
     }
 

@@ -1,8 +1,12 @@
 import { NgxSelectComponent } from './ngx-select.component';
+import { TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { ComponentFixture } from '@angular/core/testing';
 
 describe('select', () => {
   let select: NgxSelectComponent;
   let options: Array<any>;
+  let fixture: ComponentFixture<NgxSelectComponent>;
 
   beforeEach(() => {
     select = new NgxSelectComponent();
@@ -62,24 +66,71 @@ describe('select', () => {
     });
   });
 
-  describe('highlight available option', () => {
-    it('should open when no options available', () => {
+  describe('highlight', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          NgxSelectComponent
+        ],
+        imports: [
+          FormsModule
+        ]
+      });
+
+      fixture = TestBed.createComponent(NgxSelectComponent);
+
+      select = fixture.componentInstance;
+      select.labelField = 'name';
+      select.valueField = 'id';
+      select.options = options;
+
+      fixture.detectChanges();
+    });
+
+    it('should jump to next available item', () => {
       select.highlightNextOption();
 
       expect(select.highlightedOptionIndex).toBe(0);
       expect(select.isOpen).toBeTruthy();
-
-      select.options = options;
-      select.ngOnInit();
-
-      select.highlightNextOption();
-      expect(select.highlightedOptionIndex).toBe(1);
     });
 
-    it('should open on jumping to prev available option (keyup)', () => {
+    it('should jump to first available item, if there is no more left', () => {
+      for (let i = 0; i <= options.length; i++) {
+        select.highlightNextOption();
+      }
+
+      expect(select.highlightedOptionIndex).toBe(0);
+      expect(select.isOpen).toBeTruthy();
+    });
+
+    it('should jump to prev available item', () => {
       select.highlightPrevOption();
 
+      expect(select.highlightedOptionIndex).toBe(options.length - 1);
       expect(select.isOpen).toBeTruthy();
+    });
+
+    it('should highlight "add new option" if allow add', done => {
+      select.modelChange.subscribe(val => {
+        expect(val.length).toBe(1);
+        expect(val[0][select.valueField]).toBeNull();
+        expect(val[0][select.labelField]).toBe('some totally new item');
+        done();
+      });
+
+      select.isMultiple = true;
+      select.isObjectValue = true;
+      select.allowAdd = true;
+
+      // user filters
+      select.inputValue = 'some totally new item';
+      select.onInputChange(select.inputValue);
+
+      fixture.detectChanges();
+
+      // goes down 1
+      select.highlightNextOption();
+      select.onEnter();
     });
   });
 
@@ -157,6 +208,16 @@ describe('select', () => {
       expect(select.isNoFilterResults).toBeFalsy();
     });
 
+    it('should show allow add btn when filter result is available, but not the exact same value', () => {
+      select.allowAdd = true;
+      select.inputValue = 'fake-name';
+
+      select.onInputChange(select.inputValue);
+
+      expect(select.availableOptions.length).toBe(3);
+      expect(select.isAddBtnVisible).toBeTruthy();
+    });
+
     it('should show that all options have been selected', done => {
       select.inputValue = 'fake-name-random';
       select.isMultiple = true;
@@ -232,10 +293,6 @@ describe('select', () => {
       expect(select.selectedOptions[1][select.labelField]).toBe('fake-name-3');
     });
 
-    it('should null model, when it updates as null', () => {
-
-    });
-
     describe('allowAdd elements', () => {
       beforeEach(() => {
         select.options = options;
@@ -298,19 +355,6 @@ describe('select', () => {
         select.focus();
         select.selectOption(select.options[0]);
       });
-
-      it('should select the highlighted indexed option on enter', done => {
-        select.modelChange.subscribe(value => {
-          expect(value).toBe(options[0][select.valueField]);
-
-          done();
-        });
-
-        select.highlightNextOption();
-        select.onEnter();
-      });
-
-      it('should selected item be in availableOptions');
 
       describe('allowAdd', () => {
         it('should be able add option', done => {
@@ -393,17 +437,6 @@ describe('select', () => {
 
         select.focus();
         select.selectOption(select.options[0]);
-      });
-
-      it('should add the highlighted indexed option on enter', done => {
-        select.modelChange.subscribe(value => {
-          expect(value[0]).toBe(options[0][select.valueField]);
-
-          done();
-        });
-
-        select.highlightNextOption();
-        select.onEnter();
       });
 
       describe('allowAdd', () => {
@@ -619,5 +652,5 @@ describe('select', () => {
         done();
       }, 100);
     });
-  })
+  });
 });

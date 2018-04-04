@@ -61,6 +61,7 @@ export class NgxSelectComponent implements OnInit {
   @Input() dropdownDirection? = 'down';
 
   @ViewChild('selectDOM') selectDOM: ElementRef;
+  @ViewChild('optionsDOM') optionsDOM: ElementRef;
 
   // data helpers
   public availableOptionsMobile: AvailableOption[];
@@ -181,24 +182,24 @@ export class NgxSelectComponent implements OnInit {
   // highlighted options
 
   highlightNextOption() {
-    if (this.availableOptions && this.availableOptions.length > 0) {
-      if (this.highlightedOptionIndex >= this.availableOptions.length - 1) {
-        this.highlightedOptionIndex = 0;
-      } else {
-        this.highlightedOptionIndex += 1;
-      }
+    const optionsLength = this.optionsDOM ? this.optionsDOM.nativeElement.children.length : 0;
+
+    if (this.highlightedOptionIndex >= optionsLength - 1) {
+      this.highlightedOptionIndex = 0;
+    } else {
+      this.highlightedOptionIndex += 1;
     }
 
     this.open();
   }
 
   highlightPrevOption() {
-    if (this.availableOptions && this.availableOptions.length > 0) {
-      if (this.highlightedOptionIndex <= 0) {
-        this.highlightedOptionIndex = this.availableOptions.length - 1;
-      } else {
-        this.highlightedOptionIndex -= 1;
-      }
+    const optionsLength = this.optionsDOM ? this.optionsDOM.nativeElement.children.length : 0;
+
+    if (this.highlightedOptionIndex <= 0) {
+      this.highlightedOptionIndex = optionsLength - 1;
+    } else {
+      this.highlightedOptionIndex -= 1;
     }
 
     this.open();
@@ -369,13 +370,7 @@ export class NgxSelectComponent implements OnInit {
   // key actions
 
   onEnter() {
-    const option = this.availableOptions[this.highlightedOptionIndex];
-
-    if (option) {
-      this.selectOption(this.availableOptions[this.highlightedOptionIndex].data);
-    } else if (this.allowAdd) {
-      this.createOption();
-    }
+    this.optionsDOM.nativeElement.children[this.highlightedOptionIndex].click();
   }
 
   onBackspace() {
@@ -466,6 +461,13 @@ export class NgxSelectComponent implements OnInit {
           } else {
             this.isAllOptionSelected = true;
           }
+        }
+      } else if (this.inputValue && this.allowAdd) {
+        const optionToCreate = this.createPreloadedSelectedOption(this.inputValue);
+        const isSelected = this.isOptionSelected(optionToCreate);
+
+        if (!isSelected) {
+          this.isAddBtnVisible = true;
         }
       }
     } else {
