@@ -245,7 +245,7 @@ export class NgxSelectComponent implements OnInit {
   preloadSelectedOptions() {
     const selectedOptions = [];
 
-    if (this._model) {
+    if (this._model || this._model === 0) {
       if (!this.isMultiple) {
         if (this.isObjectValue) {
           selectedOptions.push(this._model);
@@ -483,7 +483,7 @@ export class NgxSelectComponent implements OnInit {
     if (this.selectedOptions && this.selectedOptions.length) {
       this.selectedOptions.forEach((selectedOption, i) => {
         // option has no value, must search, maybe options has item with async load
-        if (!selectedOption[this.valueField]) {
+        if (!selectedOption[this.valueField] && selectedOption[this.valueField] !== 0) {
           this._options.forEach(option => {
             // we have a match
             if (selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
@@ -576,7 +576,7 @@ export class NgxSelectComponent implements OnInit {
   }
 
   private isOptionInOptions(option): boolean {
-    if (!option[this.valueField]) {
+    if (!option[this.valueField] && option[this.valueField] !== 0) {
       return false;
     }
 
