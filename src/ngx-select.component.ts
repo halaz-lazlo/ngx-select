@@ -97,6 +97,7 @@ export class NgxSelectComponent implements OnInit {
   @Output() dropdownClose: EventEmitter<any> = new EventEmitter();
 
   // mobile
+  @Input() mobileBreakpoint = 768;
   public isMobile: boolean;
   public dropdownOptionsHeight: number;
   @ViewChild('dropdownDOM') dropdownDOM: ElementRef;
@@ -628,6 +629,6 @@ export class NgxSelectComponent implements OnInit {
   }
 
   private updateIsMobile() {
-    this.isMobile = screen.width < 768;
+    this.isMobile = screen.width < this.mobileBreakpoint;
   }
 }
