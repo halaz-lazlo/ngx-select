@@ -1,6 +1,7 @@
 @import './scss/helpers/all';
 
 .ngx-select {
+    z-index: z-index('overlay');
     position: relative;
 
     $loader-size: 15px;
