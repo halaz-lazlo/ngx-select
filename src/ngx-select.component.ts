@@ -322,6 +322,10 @@ export class NgxSelectComponent implements OnInit {
     } else {
       this.close();
     }
+
+    setTimeout(() => {
+      this.updateInputWidth();
+    }, 1);
   }
 
   createOption() {
