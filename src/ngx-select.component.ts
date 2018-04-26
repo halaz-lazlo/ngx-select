@@ -162,7 +162,10 @@ export class NgxSelectComponent implements OnInit {
     }
 
     setTimeout(() => {
+      this.updateInputWidth();
+
       this.calculateDropdownOptionsHeight();
+
       this.updateIsMobile();
     }, 1);
 
@@ -173,8 +176,9 @@ export class NgxSelectComponent implements OnInit {
 
   close() {
     if (this.isOpen) {
-      this.isOpen = false;
       this.inputValue = '';
+
+      this.isOpen = false;
 
       document.body.classList.remove('body--ngx-selext-open');
 

@@ -3,7 +3,7 @@
 .ngx-select {
     position: relative;
 
-    $loader-size: 20px;
+    $loader-size: 15px;
 
     &,
     *,
@@ -44,7 +44,6 @@
         display: none;
         width: 0;
         min-width: 10px;
-        min-height: 26px;
         margin: 5px 0;
         border: 0;
         cursor: pointer;
@@ -68,7 +67,7 @@
 
     &__value {
         display: inline-block;
-        margin-right: 5px;
+        margin: 5px 5px 5px 0;
         vertical-align: middle;
     }
 
@@ -105,6 +104,10 @@
             &::after {
                 content: 'x';
             }
+        }
+
+        &:last-of-type {
+            margin-right: 5px;
         }
     }
 
@@ -297,9 +300,9 @@
     &__loader {
         display: none;
         position: absolute;
-        top: 8px;
+        top: 50%;
         right: 40px;
-                transform: translateZ(0);
+        transform: translate3d(0, -50%, 0);
         border-top: ($loader-size / 10) solid rgba(255, 255, 255, .2);
         border-right: ($loader-size / 10) solid rgba(255, 255, 255, .2);
         border-bottom: ($loader-size / 10) solid rgba(255, 255, 255, .2);
@@ -308,8 +311,6 @@
         text-indent: -9999em;
 
         animation: load8 .4s infinite linear;
-        -webkit-transform: translateZ(0);
-            -ms-transform: translateZ(0);
 
         &,
         &::after {
@@ -326,10 +327,10 @@
 
 @keyframes load8 {
     0% {
-        transform: rotate(0deg);
+        transform: translate3d(0, -50%, 0) rotate(0deg);
     }
     100% {
-        transform: rotate(360deg);
+        transform: translate3d(0, -50%, 0) rotate(360deg);
     }
 }
 

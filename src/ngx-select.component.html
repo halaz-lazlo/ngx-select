@@ -5,7 +5,7 @@
     'ngx-select--single': !isMultiple,
     'ngx-select--multiple': isMultiple,
     'ngx-select--open': isOpen,
-    'ngx-select--loading': isLoading,
+    'ngx-select--loading': !isLoading,
     'ngx-select--dropdown-up': dropdownDirection === 'up',
     'ngx-select--desktop': !isMobile
   }">
@@ -36,22 +36,20 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="isOpen">
-      <input
-        #inputDOM
-        class="ngx-select__input"
-        type="text"
-        [(ngModel)]="inputValue"
-        [style.width.px]="inputWidth"
-        (keydown.tab)="close()"
-        (keydown.shift.tab)="close()"
-        (keydown.arrowup)="highlightPrevOption()"
-        (keydown.arrowdown)="highlightNextOption()"
-        (keydown.enter)="onEnter()"
-        (keydown.backspace)="onBackspace()"
-        (keydown.escape)="close()"
-        (ngModelChange)="onInputChange($event)">
-    </ng-container>
+    <input
+      #inputDOM
+      class="ngx-select__input"
+      type="text"
+      [(ngModel)]="inputValue"
+      [style.width.px]="inputWidth"
+      (keydown.tab)="close()"
+      (keydown.shift.tab)="close()"
+      (keydown.arrowup)="highlightPrevOption()"
+      (keydown.arrowdown)="highlightNextOption()"
+      (keydown.enter)="onEnter()"
+      (keydown.backspace)="onBackspace()"
+      (keydown.escape)="close()"
+      (ngModelChange)="onInputChange($event)">
     <div #inputFakeDOM class="ngx-select__input-fake">{{inputValue}}</div>
 
     <div class="ngx-select__loader"></div>
