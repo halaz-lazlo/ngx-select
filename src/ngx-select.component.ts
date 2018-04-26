@@ -147,9 +147,11 @@ export class NgxSelectComponent implements OnInit {
   focus() {
     this.open();
 
-    if (this.inputDOM) {
-      this.inputDOM.nativeElement.focus();
-    }
+    setTimeout(() => {
+      if (this.inputDOM) {
+        this.inputDOM.nativeElement.focus();
+      }
+    }, 1);
   }
 
   open() {
@@ -216,14 +218,7 @@ export class NgxSelectComponent implements OnInit {
     // update input width
     if (this.inputFakeDOM) {
       setTimeout(() => {
-        let inputWidth = 0;
-        inputWidth = this.inputFakeDOM.nativeElement.clientWidth + 15;
-
-        if (inputWidth === 0) {
-          inputWidth = 5;
-        }
-
-        this.inputWidth = inputWidth;
+        this.updateInputWidth();
       }, 10);
     }
 
@@ -239,6 +234,17 @@ export class NgxSelectComponent implements OnInit {
     this.open();
 
     this.inputChange.emit(this.inputValue);
+  }
+
+  updateInputWidth() {
+    let inputWidth = 0;
+    inputWidth = this.inputFakeDOM.nativeElement.clientWidth + 15;
+
+    if (inputWidth === 0) {
+      inputWidth = 5;
+    }
+
+    this.inputWidth = inputWidth;
   }
 
   // select
@@ -309,6 +315,8 @@ export class NgxSelectComponent implements OnInit {
         this.updateAvailableOptions();
         this.updateModel();
       }, 1);
+    } else {
+      this.close();
     }
   }
 
