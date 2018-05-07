@@ -176,7 +176,16 @@ export class NgxSelectComponent implements OnInit {
 
   close() {
     if (this.isOpen) {
-      this.inputValue = '';
+      if (this.inputValue && this.allowAdd) {
+        this.createOption();
+      } else {
+        this.inputValue = '';
+      }
+
+      setTimeout(() => {
+        this.updateInputWidth();
+        this.updateAvailableOptions();
+      }, 1);
 
       this.isOpen = false;
 
