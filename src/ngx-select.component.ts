@@ -437,7 +437,7 @@ export class NgxSelectComponent implements OnInit {
       if (this.inputValue) {
         filteredOptions = options.filter(option => {
           if (option[this.labelField]) {
-            return !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue) >= 0;
+            return !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue.toLowerCase()) >= 0;
           } else {
             console.error(`${this.labelField} property doesn't exist on: `, option);
 
