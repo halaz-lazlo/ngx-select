@@ -1,0 +1,21 @@
+{
+  "name": "@halaz.lazlo/ngx-select",
+  "version": "2.6.4",
+  "peerDependencies": {
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0"
+  },
+  "author": "halaz.lazlo",
+  "description": "Angular select component",
+  "homepage": "https://github.com/halaz-lazlo/ngx-select#readme",
+  "bugs": {
+    "url": "https://github.com/halaz-lazlo/ngx-select/issues"
+  },
+  "keywords": [
+    "angular",
+    "select",
+    "multiple",
+    "async"
+  ],
+  "license": "MIT"
+}

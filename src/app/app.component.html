@@ -1,0 +1,169 @@
+<div class="container">
+  <div class="app__examples">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <h1 class="app__title">
+          lib-ngx-selectize demo
+        </h1>
+
+        <div class="app__example">
+          <h2 class="app__example-title">
+            Model = option[valueField]
+          </h2>
+
+          <lib-ngx-select
+            [options]="availableGames"
+            [(model)]="game"
+            [placeholder]="'Select...'"
+            [valueField]="'id'"
+            [labelField]="'name'"
+          ></lib-ngx-select>
+
+          <div *ngIf="game" class="app__example-value">
+            {{game}}
+          </div>
+        </div>
+
+        <div class="app__example">
+          <h2 class="app__example-title">
+            Model = option
+          </h2>
+
+          <lib-ngx-select
+            [options]="availableGames"
+            [(model)]="gameObject"
+            [valueField]="'id'"
+            [labelField]="'name'"
+            [isObjectValue]="true"
+          ></lib-ngx-select>
+
+          <div *ngIf="gameObject" class="app__example-value">
+            {{gameObject | json}}
+          </div>
+        </div>
+
+        <div class="app__example">
+          <h2 class="app__example-title">
+            Model = option allow add
+          </h2>
+
+          <lib-ngx-select
+            [options]="availableGames"
+            [(model)]="gameObjectAdd"
+            [valueField]="'id'"
+            [labelField]="'name'"
+            [isObjectValue]="true"
+            [allowAdd]="true"
+          ></lib-ngx-select>
+
+          <div *ngIf="gameObjectAdd" class="app__example-value">
+            {{gameObjectAdd | json}}
+          </div>
+        </div>
+
+        <div class="app__example">
+          <h2 class="app__example-title">
+            Model = array[option[valueField], ...]
+          </h2>
+
+          <lib-ngx-select
+            [options]="availableGames"
+            [(model)]="games"
+            [isMultiple]="true"
+            [valueField]="'id'"
+            [labelField]="'name'"
+          ></lib-ngx-select>
+
+          <div *ngIf="games" class="app__example-value">
+            {{games | json}}
+          </div>
+        </div>
+
+        <div class="app__example">
+          <h2 class="app__example-title">
+            Model = array[option, ...]
+          </h2>
+
+          <lib-ngx-select
+            [options]="availableGames"
+            [(model)]="gamesObject"
+            [isMultiple]="true"
+            [valueField]="'id'"
+            [labelField]="'name'"
+            [isObjectValue]="true"
+          ></lib-ngx-select>
+
+          <div *ngIf="gamesObject" class="app__example-value">
+            {{gamesObject | json}}
+          </div>
+        </div>
+
+        <div class="app__example">
+          <h2 class="app__example-title">
+            Model = array[option[valueField], ...] allow add
+          </h2>
+
+          <lib-ngx-select
+            [options]="availableGames"
+            [(model)]="gamesAdd"
+            [isMultiple]="true"
+            [valueField]="'name'"
+            [labelField]="'name'"
+            [allowAdd]="true"
+          ></lib-ngx-select>
+
+          <div *ngIf="gamesAdd" class="app__example-value">
+            {{gamesAdd | json}}
+          </div>
+        </div>
+
+        <div class="app__example">
+          <h2 class="app__example-title">
+            Model = array[option, ...] allow add
+          </h2>
+
+          <lib-ngx-select
+            [options]="availableGames"
+            [(model)]="gamesObjectAdd"
+            [isMultiple]="true"
+            [valueField]="'id'"
+            [labelField]="'name'"
+            [isObjectValue]="true"
+            [allowAdd]="true"
+          ></lib-ngx-select>
+
+          <div *ngIf="gamesObjectAdd" class="app__example-value">
+            {{gamesObjectAdd | json}}
+          </div>
+        </div>
+
+        <div class="app__example">
+          <h2 class="app__example-title">
+            Async: array[option, ...] allow add
+          </h2>
+          <p>
+            After options are loaded, it updates, the added options
+          </p>
+
+          <lib-ngx-select
+            [options]="availableGamesAsync"
+            [(model)]="gamesAsync"
+            [valueField]="'id'"
+            [labelField]="'name'"
+            [isLoading]="isOptionsLoading"
+            [isMultiple]="true"
+            [allowAdd]="true"
+            [isObjectValue]="true"
+            [placeholder]="'Select...'"
+            [dropdownDirection]="'up'"
+            (inputChange)="findGames($event)"
+          ></lib-ngx-select>
+
+          <div *ngIf="gamesObjectAdd" class="app__example-value">
+            {{gamesAsync | json}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

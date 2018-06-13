@@ -1,7 +1,6 @@
-import { NgxSelectComponent } from './ngx-select.component';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { ComponentFixture } from '@angular/core/testing';
+import { NgxSelectComponent } from './ngx-select.component';
 
 describe('select', () => {
   let select: NgxSelectComponent;

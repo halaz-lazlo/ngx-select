@@ -1,7 +1,6 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { NgxSelectComponent } from './ngx-select.component';
 
 @NgModule({
@@ -9,11 +8,7 @@ import { NgxSelectComponent } from './ngx-select.component';
     CommonModule,
     FormsModule
   ],
-  exports: [
-    NgxSelectComponent
-  ],
-  declarations: [
-    NgxSelectComponent
-  ]
+  declarations: [NgxSelectComponent],
+  exports: [NgxSelectComponent]
 })
 export class NgxSelectModule { }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 
 export class AvailableOption {
   constructor(
@@ -8,8 +8,9 @@ export class AvailableOption {
 }
 
 @Component({
-  selector: 'ngx-select',
+  selector: 'lib-ngx-select',
   templateUrl: './ngx-select.component.html',
+  styleUrls: ['./ngx-select.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class NgxSelectComponent implements OnInit {
@@ -22,8 +23,8 @@ export class NgxSelectComponent implements OnInit {
 
     if (!this.isFirstInit) {
       this.optionsRefreshTimeout = setTimeout(() => {
-        this.updateAvailableOptions();
         this.updateSelectedOptionsWithoutId();
+        this.updateAvailableOptions();
       }, 10);
     }
   }
@@ -50,15 +51,15 @@ export class NgxSelectComponent implements OnInit {
   @Output() modelChange: EventEmitter<any> = new EventEmitter();
 
   // select input related
-  @Input() labelField? = 'label';
-  @Input() valueField? = 'value';
+  @Input() labelField ? = 'label';
+  @Input() valueField ? = 'value';
   @Input() placeholder?: string;
   @Input() isObjectValue?: boolean;
   @Input() isMultiple?: boolean;
   @Input() allowAdd?: boolean;
   @Input() maxItems?: number;
   @Input() isLoading?: boolean;
-  @Input() dropdownDirection? = 'down';
+  @Input() dropdownDirection ? = 'down';
 
   @ViewChild('selectDOM') selectDOM: ElementRef;
   @ViewChild('optionsDOM') optionsDOM: ElementRef;
@@ -76,18 +77,12 @@ export class NgxSelectComponent implements OnInit {
   @ViewChild('inputFakeDOM') inputFakeDOM: ElementRef;
 
   // messages
-  public isOptionAvailable: boolean;
-  @Input() noOptionAvailableMsg? = 'No options available, try searching...';
-
-  public isAllOptionSelected: boolean;
-  @Input() allOptionSelectedMsg? = 'All options have been selected';
-
   public isNoFilterResults: boolean;
   public isNoFilterResultsMobile: boolean;
-  @Input() noFilterResultsMsg? = 'No results';
+  @Input() noFilterResultsMsg ? = 'No results';
 
   public isAddBtnVisible: boolean;
-  @Input() addOptionMsg? = 'Add {{input}}...';
+  @Input() addOptionMsg ? = 'Add {{input}}...';
   public addOptionMessage: string;
 
   // ui
@@ -104,6 +99,22 @@ export class NgxSelectComponent implements OnInit {
   @ViewChild('dropdownBtnsDOM') dropdownBtnsDOM: ElementRef;
   @ViewChild('dropdownInputDOM') dropdownInputDOM: ElementRef;
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateIsMobile();
+
+    if (this.isOpen) {
+      this.calculateDropdownOptionsHeight();
+    }
+  }
+
+  @HostListener('window:click', ['$event'])
+  onClickOutside(e) {
+    if (this.isOpen && !this.selectDOM.nativeElement.contains(e.target)) {
+      this.close();
+    }
+  }
+
   // other
   private isFirstInit = true;
 
@@ -115,23 +126,11 @@ export class NgxSelectComponent implements OnInit {
 
     this.updateAvailableOptions();
 
-    // click outside
-    window.addEventListener('click', e => {
-      if (this.isOpen && !this.selectDOM.nativeElement.contains(e.target)) {
-        this.close();
-      }
-    });
-
-    // dropdown height resize
-    window.addEventListener('resize', () => {
-      if (this.isOpen) {
-        this.calculateDropdownOptionsHeight();
-        this.updateIsMobile();
-      }
-    }, true);
+    this.updateIsMobile();
 
     this.isFirstInit = false;
 
+    // throw error on
     if (
       this.allowAdd &&
       this.labelField !== this.valueField &&
@@ -162,11 +161,11 @@ export class NgxSelectComponent implements OnInit {
     }
 
     setTimeout(() => {
+      this.updateIsMobile();
+
       this.updateInputWidth();
 
       this.calculateDropdownOptionsHeight();
-
-      this.updateIsMobile();
     }, 1);
 
     document.body.classList.add('body--ngx-selext-open');
@@ -302,7 +301,7 @@ export class NgxSelectComponent implements OnInit {
 
   createPreloadedSelectedOption(value) {
     const selectedOption = {};
-    selectedOption[this.valueField] = value;
+    selectedOption[this.valueField] = null;
     selectedOption[this.labelField] = value;
 
     return selectedOption;
@@ -337,10 +336,13 @@ export class NgxSelectComponent implements OnInit {
     }, 1);
   }
 
+  // asd
   createOption() {
-    const newOption = {};
-    newOption[this.valueField] = null;
-    newOption[this.labelField] = this.inputValue;
+    let newOption = this.findOptionByLabel(this.inputValue);
+
+    if (!newOption) {
+      newOption = this.createPreloadedSelectedOption(this.inputValue)
+    }
 
     setTimeout(() => {
       this.selectOption(newOption);
@@ -396,7 +398,15 @@ export class NgxSelectComponent implements OnInit {
   // key actions
 
   onEnter() {
-    this.optionsDOM.nativeElement.children[this.highlightedOptionIndex].click();
+    if (this.optionsDOM) {
+      const highlightedOption = this.optionsDOM.nativeElement.children[this.highlightedOptionIndex];
+
+      if (highlightedOption) {
+        highlightedOption.click();
+      }
+    } else if (this.allowAdd) {
+      this.createOption();
+    }
   }
 
   onBackspace() {
@@ -414,12 +424,10 @@ export class NgxSelectComponent implements OnInit {
   // data helpers
 
   private updateAvailableOptions() {
-    const availableOptions = [];
+    const availableOptions: AvailableOption[] = [];
     const availableOptionsMobile = [];
 
     if (this._options) {
-      this.isOptionAvailable = true;
-
       // copy _options
       const options = this._options.map(x => Object.assign({}, x));
 
@@ -436,8 +444,8 @@ export class NgxSelectComponent implements OnInit {
       let filteredOptions = options;
       if (this.inputValue) {
         filteredOptions = options.filter(option => {
-          if (option[this.labelField]) {
-            return !this.inputValue || option[this.labelField].toLowerCase().indexOf(this.inputValue.toLowerCase()) >= 0;
+          if (Object.keys(option).indexOf(this.labelField) >= 0) {
+            return !this.inputValue || (option[this.labelField] && option[this.labelField].toLowerCase().indexOf(this.inputValue.toLowerCase()) >= 0);
           } else {
             console.error(`${this.labelField} property doesn't exist on: `, option);
 
@@ -449,19 +457,20 @@ export class NgxSelectComponent implements OnInit {
       // is in selected
       filteredOptions.forEach(option => {
         const isOptionSelected = this.isOptionSelected(option);
-        if (!this.isMultiple || !isOptionSelected) {
+        if (!isOptionSelected || (!this.isMultiple && !this.allowAdd)) {
           availableOptions.push(new AvailableOption(isOptionSelected, option));
         }
 
         availableOptionsMobile.push(new AvailableOption(isOptionSelected, option));
       });
 
+      this.availableOptions = availableOptions;
+      this.availableOptionsMobile = availableOptionsMobile;
+
       // messages
       this.isAddBtnVisible = false;
       this.isNoFilterResults = false;
       this.isNoFilterResultsMobile = false;
-      this.isAllOptionSelected = false;
-      this.isOptionAvailable = true;
 
       if (availableOptions.length === 0) {
         if (this.inputValue && this.inputValue !== '') {
@@ -481,28 +490,20 @@ export class NgxSelectComponent implements OnInit {
               this.isNoFilterResultsMobile = true;
             }
           }
-        } else {
-          if (!this.selectedOptions || this.selectedOptions.length === 0) {
-            this.isOptionAvailable = false;
-          } else {
-            this.isAllOptionSelected = true;
-          }
         }
       } else if (this.inputValue && this.allowAdd) {
         const optionToCreate = this.createPreloadedSelectedOption(this.inputValue);
-        const isSelected = this.isOptionSelected(optionToCreate);
 
-        if (!isSelected) {
+        const isSelected = this.isOptionSelected(optionToCreate);
+        const isInAvailableOptions = !!availableOptions.find(availableOption => {
+          return availableOption.data[this.labelField] === optionToCreate[this.labelField];
+        });
+
+        if (!isSelected && !isInAvailableOptions) {
           this.isAddBtnVisible = true;
         }
       }
-    } else {
-      this.isOptionAvailable = false;
     }
-
-    this.availableOptions = availableOptions;
-
-    this.availableOptionsMobile = availableOptionsMobile;
   }
 
   private updateSelectedOptionsWithoutId() {
@@ -512,17 +513,34 @@ export class NgxSelectComponent implements OnInit {
         if (!selectedOption[this.valueField] && selectedOption[this.valueField] !== 0) {
           this._options.forEach(option => {
             // we have a match
-            if (selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase()) {
+            if (this.isOptionsEqual(selectedOption, option)) {
               this.selectedOptions[i] = option;
             }
           });
         }
       });
 
-      this.updateAvailableOptions();
-
       this.updateModel();
     }
+  }
+
+  private isOptionsEqual(option1, option2) {
+    let equals = false;
+
+    if (typeof option1[this.labelField] === 'string' && typeof option2[this.labelField] === 'string') {
+      const a = option1[this.labelField].replace(/ /g,'').replace(/[^\w\s]/gi, '').toLowerCase();
+      const b = option2[this.labelField].replace(/ /g,'').replace(/[^\w\s]/gi, '').toLowerCase();
+
+      equals = a === b;
+    } else {
+      equals = option1[this.labelField] === option2[this.labelField];
+    }
+
+    if (!this.allowAdd) {
+      equals = equals && option1[this.valueField] === option2[this.valueField];
+    }
+
+    return equals;
   }
 
   private updateModel() {
@@ -574,15 +592,7 @@ export class NgxSelectComponent implements OnInit {
 
     if (this.selectedOptions && this.selectedOptions.length) {
       if (this.isMultiple) {
-        const isSelected = this.selectedOptions.find(selectedOption => {
-          let equals = selectedOption[this.labelField].toLowerCase() === option[this.labelField].toLowerCase();
-
-          if (!this.allowAdd) {
-            equals = equals && selectedOption[this.valueField] === option[this.valueField];
-          }
-
-          return equals;
-        });
+        const isSelected = this.selectedOptions.find(selectedOption => this.isOptionsEqual(selectedOption, option));
 
         isOptionSelected = !!isSelected;
       } else {
